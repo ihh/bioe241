@@ -1,22 +1,20 @@
-\documentclass[10pt]{article}
+\documentclass[10pt]{book}
 \bibliographystyle{apalike}
 
 \input{defs.tex}
 
 \begin{document}
 \title{BioE241 labs}
-\author{374C Stanley Hall, UC Berkeley}
+\author{Ian Holmes \\ 374C Stanley Hall \\ UC Berkeley}
 \date{}
 
 \maketitle
 
 \titlecite
 
-\newpage
 \tableofcontents
 
-\newpage
-\section*{Introduction}
+\chapter{Introduction}
 
 This handout describes a series of labs for BioE241,
 accompanying the theoretical lectures in that class,
@@ -25,14 +23,28 @@ which describe various statistical models for biological data.
 The class has a (non-exclusive) emphasis on models that describe the evolution of
 DNA, RNA and amino acid sequences on phylogenetic trees.
 
-The BioE241 class page is here: \url{http://biowiki.org/BioE241}
-
-Most of the labs use the DART software: \url{http://biowiki.org/DART}
-
 Other software tools are also used.
 The labs also ask you to develop some pseudocode and actual implementations
 (generally in a programming language of your choice)
 and to do a small amount of elementary math.
+
+\section{Useful URLs}
+
+\begin{tabular}{ll}
+BioE241 class homepage
+ & \url{http://biowiki.org/BioE241} \\
+\\
+DART software homepage
+ & \url{http://biowiki.org/DART} \\
+ (used by most of the labs) & \\
+\\
+Class materials repository
+ & \url{https://github.com/ihh/bioe241} \\
+ (lecture notes, these lab handouts, data files) & \\
+\\
+DART source code repository
+ & \url{https://github.com/ihh/dart} \\
+\end{tabular}
 
 % Include individual labs
 \input{simulation/lab.tex}
@@ -51,7 +63,6 @@ and to do a small amount of elementary math.
 \input{diffusion/lab.tex}
 
 % Bibliography
-\newpage
 \bibliography{../../latex-inputs/alignment,../../latex-inputs/ncrna,../../latex-inputs/genomics,../../latex-inputs/reconstruction,../../latex-inputs/transposon,../../latex-inputs/duplication}
 
 \end{document}
