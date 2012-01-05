@@ -1,1 +1,1 @@
-Makefile.labs
+../Makefile.labs
