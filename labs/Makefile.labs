@@ -1,0 +1,48 @@
+LATEX := pdflatex -shell-escape
+BIBTEX := bibtex
+
+#NB to get graphviz binding to work, need package: texlive-extra-utils
+
+PAPER := handout
+ALLDOC := $(PAPER)
+
+TEXFILES := $(wildcard *.tex)
+DEPS := $(TEXFILES)
+
+ifneq (,$(findstring Darwin,$(shell uname)))
+OPEN  := open
+else
+OPEN  := gnome-open
+endif
+
+open: $(addsuffix .pdf.open,$(PAPER))
+
+all: $(addsuffix .pdf,$(ALLDOC))
+
+openall: $(addsuffix .pdf.open,$(PAPER)) $(addsuffix .pdf.nobib,$(ALLDOC))
+
+clean: $(addsuffix .clean,$(ALLDOC))
+
+$(PAPER).tex: ../$(PAPER).tex
+	ln -sf $< $@
+
+%.clean:
+	@rm -fv $*.aux $*.bbl $*.toc $*.blg $*.log $*.pdf
+
+%.pdf: %.tex $(DEPS)
+	test -e $*.aux && rm $*.aux || eval
+	$(LATEX) $*
+	$(BIBTEX) $*
+	$(LATEX) $*
+	$(LATEX) $*
+
+%.pdf.nobib: %.tex $(DEPS)
+	test -e $*.aux && rm $*.aux || eval
+	$(LATEX) $*
+	$(LATEX) $*
+	open $*.pdf
+
+%.open: %
+	$(OPEN) $<
+
+.SECONDARY:
