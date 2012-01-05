@@ -14,24 +14,74 @@ or you could use one of various applications on desktop OS's that will do this.
 
 \section{Simulate from an exponential distribution by inverting the cumulative distribution}
 
-Pseudocode to be provided.
+Sample a random variable $t$ representing the amount of time you would have to wait for a radioactive decay event
+given that the number of such events in a time interval $[0,T]$ is Poisson-distributed with mean $rT$.
 
-\section{Simulate the general reversible-time nucleotide model over a finite time interval}
+Hint 1: the probability density of $t$ is $p(t) = r \exp(-r t)$.
 
-\section{Simulate the general reversible-time nucleotide model over a phylogenetic tree}
+Hint 2: let $v$ be an r.v. uniformly distributed on $[0,1]$,
+so that the pdf of $v$ is $q(v)$ which is 1 in the range $[0,1]$, and 0 outside.
+We can easily sample from this distribution.
+Now suppose that there is some function $f$ such that $v = f(t)$.
+We want to choose $f$ such that $q(v)dv = p(t)dt$.
+But we know $q(v)=1$ and $dv = f'(t) dt$.
+Thus $f'=p$ and so $f(t) = \int_{-\infty}^t p(u) du$.
+Inverting this function, i.e. finding $f^{-1}(v)$, gives us $t$ in terms of $v$.
+
+Using these hints, or otherwise, show that $t=-\frac{\log(v)}{r}$ has the required density.
+Write down pseudocode for generating sample values of $t$.
+
+\section{Simulate a general nucleotide model over a finite time interval}
+
+Suppose that $R$ is a $4 \times 4$ rate matrix
+(with negatives on the diagonals, so $R_{ii} = -\sum_{j \neq i} R_{ij}$).
+
+A process starts in an initial state $x(0)$ and is allowed to evolve for time $T$.
+Write down pseudocode that generates a sample trajectory,
+yielding not only the final value $x(T)$ but also all the timepoints at which the state changes.
+It should also keep track of the number of times each substitution $i \to j$ occurred on the trajectory,
+and the total amount of time that was spent in each state, ``waiting'' for the next mutation.
+
+The rate matrix $R$ should be represented by a 2D array or other generic data structure in your code
+(i.e. your code should allow for different rate matrices by just changing some variables;
+however, you don't have to read it from a file).
+
+If you'd like to start with a simpler model, use Kimura's two-parameter model \cite{Kimura80}.
+
+\section{Simulate the general nucleotide model over a phylogenetic tree}
+
+This exercise is a little harder than the previous one, though it is the same basic idea.
+At each node in the (bifurcating) phylogeny, you will need to save the state, handle one branch,
+restore the state \& handle the other branch.
+
+For simplicity, you can hard-code the tree, e.g. you could use the tree {\tt ((A,B),(C,D))}
+with appropriate branch lengths.
 
 \section{Simulate Gillespie's algorithm}
 
-\cite{Gillespie77}
+Simulate Gillespie's algorithm \cite{Gillespie77}
+for a simple set of chemical reactions, e.g.
+\[
+A + B \leftrightarrow AB 
+\]
+and
+\[
+AB + C \rightarrow ABC
+\]
+(with appropriate made-up rate constants).
 
-\section{Simulate the spatial Lotka-Volterra model on a 2D lattice}
 
-Easy: discrete-time version.
-Hard: continuous-time version.
+\section{Simulate the methylation-induced-CpG-deamination model}
 
-Collect summary statistics.
+The goal here is to understand the temporal dynamics.
+If the original sequence contains an $N$-mer $x_1 x_2 x_3 \ldots x_N$,
+what is the probability that the descendant sequence has the $N$-mer $y_1 y_2 y_3 \ldots y_N$,
+if the sequences are separated by evolutionary time $t$?
 
-\section{Simulate the 1D Ising model and the methylation-induced-CpG-deamination model}
+You will need to run lots of simulations to get good statistics on this.
+(It may be easiest to implement the general nearest-neighbor irreversible-time nucleotide model,
+as both the Ising and CpG models are a subset of this.)
 
-It may be easiest to implement the general nearest-neighbor irreversible-time nucleotide model,
-as both the Ising and CpG models are a subset of this.
+You may use any model that allows for nearest-neighbor effects,
+e.g. Kimura's two-parameter model \cite{Kimura80}
+with an elevated rate for $CG \to CA$ and $CG \to TG$ mutations.
