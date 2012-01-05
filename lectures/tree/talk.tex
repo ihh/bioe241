@@ -1,0 +1,694 @@
+\documentclass{beamer}
+
+\input{../defs.tex}
+
+% workaround for beamer bug
+\providecommand\thispdfpagelabel[1]{}  % workaround
+
+% presentation
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage[english]{babel}
+% or whatever
+
+\usepackage[latin1]{inputenc}
+% or whatever
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+
+\title[Trees] % (optional, use only with long paper titles)
+{Phylogenetic trees}
+
+\subtitle
+{Likelihood computations and inference} % (optional)
+
+\author% [Holmes] (optional, use only with lots of authors)
+{I.~Holmes} % \inst{1} \and S.~Another\inst{2}
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[University of California, Berkeley] % (optional, but mostly needed)
+{
+%  \inst{1}%
+  Department of Bioengineering\\
+  University of California, Berkeley}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date%[Short Occasion] % (optional)
+{Spring semester}
+
+\subject{Talks}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+
+
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+
+\section{Likelihoods}
+
+\newcommand\rootpi{\pi_{x_1}}
+\newcommand\mxx[2]{M(t_{#1#2})_{x_{#1} x_{#2}}}
+\newcommand\mxy[2]{M(t_{#1#2})_{x_{#1} y_{#2}}}
+\newcommand\xydelta[1]{\delta_{x_{#1} y_{#1}}}
+
+\begin{frame}{Tree Notation}
+
+%\item Examples of why phylogeny is important
+% \inone{mammalian evolution, virus evolution, orthology}
+Notation and model: let...
+\vspace{\baselineskip}
+
+\begin{tabular}{ll}
+ $x_n$ & be (actual) state of node $n$ \\
+ $y_n$ & be (observed) character at leaf node $n$ \\
+ $X = \{x_n\}$ & be the set of all node states \\
+ $Y = \{ y_n \}$ & be the set of all observed characters at leaf nodes \\
+ $Y_n$ & be the set of all $y_m$ descended from node $n$ \\
+ $\overline{Y_n} = Y \setminus Y_n$ & be the set of all remaining $y_m$ \\
+ $t_{mn}$ & be evolutionary ``distance'' (time) from $m$ to $n$
+\end{tabular}
+
+\vspace{\baselineskip}
+Root node is node 1.
+
+For convenience, number nodes in \alert{preorder} (parents < kids)
+
+\end{frame}
+
+\begin{frame}{Conditional \& Prior Probabilities}
+
+Parent $x_p$, child $x_c$:
+\[
+P(x_c|x_p) = \mxx{p}{c} = \exp({\bf R}t_{pc})_{x_p x_c}
+\]
+
+Leaf node $c$:
+\[
+P(y_c|x_c) = \delta_{x_c y_c}
+\]
+i.e. observation $y_c$ fully specifies state $x_c$.
+We can drop the $x_c$:
+
+\[
+P(y_c|x_p) = \sum_{x_c} P(x_c|x_p) P(y_c|x_c) = \mxy{p}{c}
+\]
+
+Assumption: Ur-ancestor was in evolutionary equilibrium
+\[
+P(x_1) = \pi_{x_1}
+\]
+
+(Root node is always node 1)
+
+\end{frame}
+
+
+\begin{frame}{Felsenstein's Algorithm: Two Taxa}
+
+\itemb
+\item Felsenstein's pruning algorithm: our first DP
+ \itemb
+ \item Consider tree $T_1$:
+\Tree [.1 2 3 ]
+%\begin{parsetree}
+% ( .1. .2. .3. )
+%\end{parsetree}
+with the following dependencies between state variables $X$ and observations $Y$:
+%\begin{parsetree}
+% ( .$x_1$. ( .$x_2$. .$y_2$. ) ( .$x_3$. .$y_3$. )  )
+%\end{parsetree}
+\Tree [ .$x_1$ [ .$x_2$ $y_2$ ] [ .$x_3$ $y_3$ ] ]
+  \itemb
+  \item Joint likelihood of all nodes:
+\[
+P(X,Y) = P(x_1) P(x_2|x_1) P(x_3|x_1) P(y_2|x_2) P(y_3|x_3)
+\]
+  \item Marginal likelihood of leaves:
+\begin{eqnarray*}
+P(Y) & = & \sum_X P(X,Y) \\
+& = & \sum_{x_1} P(x_1) P(y_2|x_1) P(y_3|x_1)
+\end{eqnarray*}
+  \iteme
+ \iteme
+\iteme
+
+% \Tree [.S This [.VP [.V is ] \qroof{a simple tree}.NP ] ]
+
+\end{frame}
+
+\begin{frame}{Felsenstein's Algorithm: Four Taxa}
+
+\small
+Now consider tree $T_2$:
+%\begin{parsetree}
+% ( .1. ( .2. .4. .5. ) ( .3. .6. .7. ) )
+%\end{parsetree}
+\Tree [ .1 [ .2 4 5 ] [ .3 6 7 ] ]
+
+\vspace{\baselineskip}
+
+Joint likelihood of all nodes:
+\begin{eqnarray*}
+\lefteqn{P(X,Y)} \\
+& = & P(x_1) P(x_2|x_1) P(x_3|x_1) P(x_4|x_2) P(x_5|x_2) P(x_6|x_3) P(x_7|x_3) \prod_{n=4}^7 P(y_n|x_n)
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{Felsenstein's Algorithm: Rearranging Terms}
+
+Tree $T_2$:
+\Tree [ .1 [ .2 4 5 ] [ .3 6 7 ] ]
+and model
+\Tree [ .$x_1$ [ .$x_2$ $y_4$ $y_5$ ] [ .$x_3$ $y_6$ $y_7$ ] ]
+
+Marginal likelihood of leaves:
+\begin{eqnarray*}
+\lefteqn{P(Y) = \sum_X P(X,Y)} \\
+& \scriptstyle = & \scriptstyle \sum_{x_1} \sum_{x_2} \sum_{x_3} P(x_1) P(x_2|x_1) P(x_3|x_1) P(y_4|x_2) P(y_5|x_2) P(y_6|x_3) P(y_7|x_3) \\
+& \scriptstyle = & \scriptstyle \sum_{x_1} P(x_1) \left[ \left( \sum_{x_2} P(x_2|x_1) \left[ P(y_4|x_2) P(y_5|x_2) \right] \right) \left( \sum_{x_3} P(x_3|x_1) \left[ P(y_6|x_3) P(y_7|x_3) \right] \right) \right]
+\end{eqnarray*}
+
+Terms in square brackets have the form:
+\[
+F_n(x_n) = P(\{y_i:i\ \mbox{descended from}\ n\}|x_n) = P(Y_n|x_n)
+\]
+
+\end{frame}
+
+\begin{frame}{Felsenstein's Algorithm: Generalization}
+
+\itemb
+  \item Let $C_n$ be the set of immediate children of $n$ \\ (so e.g. $C_1 = \{ 2,3 \}$)
+  \item Rule to compute $F_n$ is then
+\begin{eqnarray*}
+F_n(x_n) & = & \left\{ \begin{array}{ll} \displaystyle
+\prod_{\mbox{$c \in C_n$}} \left( \sum_{x_c} P(x_c|x_n) F_c(x_c) \right) & \mbox{if $n$ is internal} \\
+P(y_n|x_n) & \mbox{if $n$ is a leaf}
+\end{array} \right. \\
+P(Y) & = & \sum_{x_1} P(x_1) F_1(x_1)
+\end{eqnarray*}
+  \item This is the \alert{pruning} algorithm (Felsenstein, 1981).
+\iteme
+
+\end{frame}
+
+\begin{frame}{Felsenstein's Algorithm: Recursion}
+
+\begin{eqnarray*}
+F_n(x_n) & = & \left\{ \begin{array}{ll} \displaystyle
+\prod_{\mbox{$c \in C_n$}} \left( \sum_{x_c} P(x_c|x_n) F_c(x_c) \right) & \mbox{if $n$ is internal} \\
+P(y_n|x_n) & \mbox{if $n$ is a leaf}
+\end{array} \right. \\
+P(Y) & = & \sum_{x_1} P(x_1) F_1(x_1)
+\end{eqnarray*}
+
+\itemb
+  \item Term after ``$\prod$'' sign in $F_n$ can be written $E_c(x_p) = P(Y_c|x_p) = \sum_{x_c} P(x_c|x_p) F_c(x_c)$ \\ where $p$ is parent of $c$
+  \item An instance of the \alert{sum-product algorithm} on a factor graph
+\iteme
+
+\end{frame}
+
+\begin{frame}{Pulley Principle}
+
+\itemb
+\item ``Pulley principle'' for reversible models. % Consider tree $T_1$ again:
+\Tree [ .1 2 3 ]
+%\begin{parsetree}
+% ( .1. .2. .3. )
+%\end{parsetree}
+ \itemb
+ \item Using $\pi_i M(t)_{ij} = \pi_j M(t)_{ji}$ and ${\bf M}(t){\bf M}(t')={\bf M}(t+t')$
+\begin{eqnarray*}
+P(y_2,y_3) & = & \sum_{x_1} \pi_{x_1} M(t_{12})_{x_1 y_2} M(t_{13})_{x_1 y_3} \\
+& = & \sum_{x_1} \pi_{x_2} M(t_{12})_{y_2 x_1} M(t_{13})_{x_1 y_3} \\
+& = & \pi_{y_2} M(t_{12}+t_{23})_{y_2 y_3} \\
+& = & \pi_{y_3} M(t_{12}+t_{23})_{y_3 y_2}
+\end{eqnarray*}
+ \item $P(y_2,y_3)$ depends only on $t_{12}+t_{23}$
+ \item Can slide root node (like a pulley) w/out affecting likelihood 
+ \item Corollorary: can re-root tree at any node, including any leaf
+ \iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{Alignment Probability}
+
+\itemb
+
+\item So far we have looked at $P(C|T)$, the probability of an individual alignment column, conditioned on a tree
+\item Probability of an entire alignment conditioned on tree, $P(A|T)$, is product of column probabilities:
+\[
+P(A|T) = \prod_{C \in A} P(C|T)
+\]
+ \inone{Denote maximum likelihood tree by $T_{\mbox{\tiny ML}} = \argmax_T P(A|T)$}
+\item Note that so far we have neglected the indel history that is also (partially) specified by the alignment
+\iteme
+
+\end{frame}
+
+\section{Posterior probabilities}
+
+\begin{frame}{Ancestral State Reconstruction on a Phylogeny}
+
+\itemb
+\item Motivation:
+ \itemb
+ \item Probability distribution of ancestral state, $P(x_n|Y)$
+ \item Probability distribution of $p \to c$ branch, $P(x_p,x_c|Y)$
+ \iteme
+\item Recall tree notation:
+ \itemb
+ \item $Y = \{ y_i \}$ is the set of all leaf states
+ \item $Y_n$ contains all $y_i$ descended from node $n$
+ \item $\overline{Y_n}$ contains all $y_i$ \alert{not} descended from node $n$
+ \inone{Note $Y_1 \equiv Y$, since node 1 is the root node.}
+ \iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{Probabilities of Ancestral States}
+
+\itemb
+ \item Felsenstein's pruning algorithm computes $F_n(x_n) = P(Y_n|x_n)$
+  \inone{and thus $P(Y) = \sum_{x_1} \pi(x_1) F_1(x_1)$}
+ \item We will now give recursions for $G_n(x_n) = P(x_n,\overline{Y_n})$.
+ \item With these we can easily get posterior probabilities for...
+  \itemb
+  \item State of ancestral node
+  \item State of ancestral branch
+  \iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{State of Ancestral Node}
+
+\begin{eqnarray*}
+F_n(x_n) & = & P(Y_n|x_n) \\
+& & \\
+G_n(x_n) & = & P(x_n,\overline{Y_n}) \\
+& & \\
+P(x_n|Y) & = & \frac{P(x_n,Y)}{P(Y)} \\
+& = & \frac{1}{P(Y)} P(x_n,\overline{Y_n}) P(Y_n|x_n) \\
+& = & \frac{1}{P(Y)} G_n(x_n) F_n(x_n)
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{State of Ancestral Branch}
+
+\itemb
+  \item Joint state of ancestral branch
+% (parent $p$, child $c$, sibling $s$):
+\Tree [ .$p$ $c$ $s$ ]
+\begin{eqnarray*}
+P(x_p,x_c|Y) & = & \frac{P(x_p,x_c,Y)}{P(Y)} \\
+& = & \frac{1}{P(Y)} P(x_p,\overline{Y_p}) P(x_c|x_p) P(Y_c|x_c) P(Y_s|x_p) \\
+& = & \frac{1}{P(Y)} G_p(x_p) P(x_c|x_p) F_c(x_c) E_s(x_p)
+\end{eqnarray*}
+where $E_s(x_p) = \sum_{x_c} P(x_c|x_p) F_s(x_s)$ as before
+\iteme
+
+\end{frame}
+
+\begin{frame}{Peeling Recursion}
+
+\itemb
+ \item Recursion for $G_c(x_c) = P(x_c,\overline{Y_c})$
+\[
+G_c(x_c) = \left\{ \begin{array}{ll}
+\sum_{x_p} G_p(x_p) P(x_c|x_p) E_s(x_p) & \mbox{if $c>1$ (not root)} \\
+P(x_c) & \mbox{if $c=1$ (root)}
+\end{array} \right.
+\]
+ \inone{aka Elston-Stewart peeling algorithm}
+\iteme
+
+\end{frame}
+
+\begin{frame}{Degenerate characters}
+
+\small
+\begin{tabular}{|r|l|}
+\hline
+IUPAC ambiguity code & Possibilities \\
+\hline
+R & A G \\
+Y & C T \\
+M & A C \\
+K & G T \\
+S & C G \\
+W & A T \\
+H & A C T \\
+B & C G T \\
+V & A C G \\
+D & A G T \\
+N or X & A C G T \\
+\hline
+\end{tabular}
+
+\normalsize
+\itemb
+ \item Recall the hidden state $x_i$ behind observation $y_i$
+ \item $P(y_i|x_i)=A_{x_i y_i}$ reflects ambiguous $y_i$
+ \item Can be extended to read quality scores, etc.
+ \item $P(X,Y)$ is product of $\pi_i$'s, $M_{ij}$'s and $A_{ij}$'s
+\iteme
+
+\end{frame}
+
+\section{Factor graphs}
+
+
+\newcommand\PXYFactorGraph{
+\Tree [ .$f_1$ [ .$x_1$
+ [ .$f_2$ [ .$x_2$ [ .$f_4$ [ .$x_4$ $f_{4a}$ ] ] [ .$f_5$ [ .$x_5$ $f_{5a}$ ] ] ] ]
+ [ .$f_3$ [ .$x_3$ [ .$f_6$ [ .$x_6$ $f_{6a}$ ] ] [ .$f_7$ [ .$x_7$ $f_{7a}$ ] ] ] ]
+] ]
+}
+
+\begin{frame}{Bigraph representation of $P(X,Y)$}
+
+2-coloring: variables $X = \{ x_i \}$, functions ${\cal F} = \{ f_n \}$
+
+\vspace{.5\baselineskip}
+
+\begin{tabular}{p{.35\textwidth}p{.65\textwidth}}
+\PXYFactorGraph
+&
+\tiny
+\begin{eqnarray*}
+f_1(x_1) & = & \pi_{x_1} \\
+f_2(x_1,x_2) & = & \mxx{1}{2} \\
+f_3(x_1,x_3) & = & \mxx{1}{3} \\
+f_4(x_2,x_4) & = & \mxx{2}{4} \\
+f_5(x_2,x_5) & = & \mxx{2}{5} \\
+f_6(x_3,x_6) & = & \mxx{3}{6} \\
+f_7(x_3,x_7) & = & \mxx{3}{7} \\
+f_{4a}(x_4)  & = & A_{x_4 y_4} \\
+f_{5a}(x_5)  & = & A_{x_5 y_5} \\
+f_{6a}(x_6)  & = & A_{x_6 y_6} \\
+f_{7a}(x_7)  & = & A_{x_7 y_7} \\
+P(x_1 \ldots x_7;y_4 \ldots y_7) & = & f_1(x_1) f_2(x_1,x_2) f_3(x_1,x_3) \\
+& & \times f_4(x_2,x_4) f_5(x_2,x_5) f_6(x_3,x_6) f_7(x_3,x_7) \\
+& & \times f_{4a}(x_4) f_{5a}(x_5) f_{6a}(x_6) f_{7a}(x_7) \\
+& = & g(x_1 \ldots x_7)
+\end{eqnarray*}
+\end{tabular}
+
+\end{frame}
+
+\begin{frame}{Bigraph representation of $P(X,Y)$ showing functions}
+
+\Tree [ .$\pi_{x_1}$ [ .$x_1$
+ [ .$\mxx{1}{2}$ [ .$x_2$ [ .$\mxx{2}{4}$ [ .$x_4$ $A_{x_4 y_4}$ ] ] [ .$\mxx{2}{5}$ [ .$x_5$ $A_{x_5 y_5}$ ] ] ] ]
+ [ .$\mxx{1}{3}$ [ .$x_3$ [ .$\mxx{3}{6}$ [ .$x_6$ $A_{x_6 y_6}$ ] ] [ .$\mxx{3}{7}$ [ .$x_7$ $A_{x_7 y_7}$ ] ] ] ]
+] ]
+
+\end{frame}
+
+
+\newcommand\PYExprTree{
+\tiny
+\Tree [.$\sum_{x_1}$ [.$\otimes$ $f_1$ [ .$F_1:\otimes\quad\quad$
+ [ .$E_2:\sum_{x_2}\quad$ [ .$\otimes$ $f_2$ [ .$F_2:\otimes\quad\quad$ [ .$E_4:\sum_{x_4}\quad$ [ .$F_4:\otimes\quad\quad$ $f_4$ $f_{4a}$ ] ] [ .$E_5:\sum_{x_5}\quad$ [ .$F_5:\otimes\quad\quad$ $f_5$ $f_{5a}$ ] ] ] ] ]
+ [ .$E_3:\sum_{x_3}\quad$ [ .$\otimes$ $f_3$ [ .$F_3:\otimes\quad\quad$ [ .$E_6:\sum_{x_6}\quad$ [ .$F_6:\otimes\quad\quad$ $f_6$ $f_{6a}$ ] ] [ .$E_7:\sum_{x_7}\quad$ [ .$F_7:\otimes\quad\quad$ $f_7$ $f_{7a}$ ] ] ] ] ]
+] ] ]
+}
+
+\begin{frame}{Expression tree of $P(Y)$}
+
+\PYExprTree
+
+\end{frame}
+
+
+\newcommand\PYandPXY{
+\begin{frame}{Expression tree of $P(Y)$ and factor graph of $P(X,Y)$}
+
+\noindent\begin{tabular}{p{.7\textwidth}p{.3\textwidth}}
+\makebox{\PYExprTree} & \makebox{\tiny\PXYFactorGraph}
+\end{tabular}
+
+\end{frame}
+}
+
+\PYandPXY
+
+\begin{frame}{Factor Graphs}
+\itemb
+ \item The idea of computing marginals and posteriors on a graphical network of variables has been generalized
+  \itemb
+  \item ``\alert{Factor graphs}'', ``Graphical models'', ``Bayesian networks'', ``Markov random fields''
+  \item ``\alert{Sum-product algorithm}'', ``Message-passing'', ``Belief propagation''
+  \iteme
+ \item Here we use the Factor Graph variant of the formalism
+  \inone{Kschichang, Frey \& Loeliger, IEEE 47:2, February 2001.}
+\iteme
+\end{frame}
+
+\begin{frame}{The summary operator}
+\itemb
+ \item The ``summary'' or ``not-sum'' operator, $\notsum{} f(\cdot)$
+  \itemb
+  \item Suppose $V \subseteq W \subseteq X$.
+  \item The \alert{summary of $f(W)$ w.r.t. $V$}
+is obtained by summing $f(W)$ over all $x_i \notin V$.
+The result is a function of $V$.
+  \inone{For example...}
+\[
+\notsum{x_3,x_4} f(x_2,x_3,x_4,x_5,x_6) = \sum_{x_2} \sum_{x_5} \sum_{x_6} f(x_2,x_3,x_4,x_5,x_6)
+\]
+  \item Define the summary of $f$ w.r.t. its own arguments as $f$ itself:
+\[
+\notsum{W}f(W) \equiv f(W)
+\]
+  \item \alert{The summaries of a joint likelihood are the marginals:} \\ If $g(X)=P(X)$, then $\notsum{V} g(V) = P(V)$
+  \iteme
+\iteme
+\end{frame}
+
+\begin{frame}{Message-passing}
+\itemb
+ \item Factor graphs contain
+  \itemb
+  \item \alert{function nodes} ($f_i$)
+  \item \alert{variable nodes} ($x_i$)
+  \item An edge $f_i$---$x_j$ indicates $x_j$ is a parameter of $f_i$
+  \iteme
+ \item Computation proceeds by \alert{message-passing}
+ \item A ``message'' is actually a pre-computed function \\ over some subset of the variables in the graph
+ \item The message from node $a$ to node $b$ is written $\msg{a}{b}$
+\iteme
+\end{frame}
+
+\begin{frame}{Message-passing}
+\itemb
+  \item Message from $f_i$ to $x_j$:
+\[
+\msg{f_i}{x_j} = \notsum{x_j} f_i \prod_{k \neq j} \msg{x_k}{f_i}
+\]
+where $\{ \msg{x_k}{f_i} \}$ are the incoming messages to $f_i$
+  \item Message from $x_i$ to $f_j$:
+\[
+\msg{x_i}{f_j} = \prod_{k \neq j} \msg{f_k}{x_i}
+\]
+where $\{ \msg{f_k}{x_i} \}$ are the incoming messages to $x_i$
+\iteme
+\end{frame}
+
+\begin{frame}{Message-passing}
+
+\begin{eqnarray*}
+\msg{f_i}{x_j} & = & \notsum{x_j} f_i \prod_{k \neq j} \msg{x_k}{f_i} \\
+\msg{x_i}{f_j} & = & \prod_{k \neq j} \msg{f_k}{x_i}
+\end{eqnarray*}
+
+ The message sent from a node $n$ on an edge $e$ is...
+   \itemb
+   \item the product of:
+    \enumb
+    \item the local function at $n$ \\
+{\small (or the unit function, $x_n \to 1$, if $n$ is a variable node);}
+    \item all messages received at $n$ on edges {\em other} than $e$,
+    \enume
+   \item summarized for the variable associated with $e$.
+   \iteme
+\end{frame}
+
+
+\begin{frame}{Phylogenetic message-passing}
+
+ For a phylogenetic tree, the messages are as follows \\ ($c-p-s$ denoting child---parent---sibling)
+  \itemb
+  \item Leaves-to-root:
+\begin{eqnarray*}
+\msg{f_{na}}{x_n} & = & f_{na}(x_n) \\
+\msg{x_n}{f_n} & = & F_n(x_n) \\
+\msg{f_c}{x_p} & = & E_c(x_p)
+\end{eqnarray*}
+  \item Root-to-leaves: 
+\begin{eqnarray*}
+\msg{f_n}{x_n} & = & G_n(x_n) \\
+\msg{x_p}{f_c} & = & G_p(x_p) E_s(x_p)
+\end{eqnarray*}
+  \iteme
+\end{frame}
+
+\PYandPXY
+
+
+\begin{frame}{Factor Graphs}
+\itemb
+\item Many applications in biology...
+ \itemb
+ \item Markov models
+ \item Phylogenetic trees
+ \item Hidden Markov models
+ \item Inference on ontologies
+ \item Markov random fields (images, gene networks, ...)
+ \iteme
+\item ...and beyond...
+ \itemb
+ \item Error-correcting codes
+
+ \iteme
+\iteme
+\end{frame}
+
+
+\begin{frame}{Changing the Operators}
+\itemb
+\item The ``sum'' and ``product'' operators in the sum-product algorithm are arbitrary
+ \itemb
+ \item The sum-product algorithm works by factorising terms like
+\[
+\sum_{x_1} \sum_{x_2} f(x_1)f(x_2) = \left( \sum_{x_1} f(x_1) \right) \left( \sum_{x_2} f(x_2) \right)
+\]
+ \item This in turn relies on the distributive law,
+\[
+a \times (b+c)=a \times b + a \times c
+\]
+and can be applied to any semiring with operators $(\otimes,\oplus)$
+  \iteme
+\iteme
+\end{frame}
+
+\begin{frame}{Changing the Operators: ML inference}
+\itemb
+ \item For example, consider
+\begin{eqnarray*}
+a \oplus b & \equiv & \max(a,b) \\
+a \otimes b & \equiv & ab
+\end{eqnarray*}
+ \itemb
+ \item The pruning algorithm now calculates $\max_X P(X,Y)$
+ \item It is straightforward to recover $\argmax_X P(X,Y)$
+  \itemb
+   \item i.e. the MAP (\alert{Maximum {\em A Posteriori}}) ancestral state history
+   \item note that $\argmax_X P(X,Y) = \argmax_X P(X|Y)$
+   \item this may not give the same results as $\argmax_{x_i} P(x_i|Y)$
+  \iteme
+ \iteme
+\iteme
+\end{frame}
+
+\begin{frame}{Changing the Operators: Parsimony}
+\itemb
+ \item Another example: consider 
+\begin{eqnarray*}
+a \oplus b & \equiv & \min(a,b) \\
+a \otimes b & \equiv & a + b
+\end{eqnarray*}
+and set $M(t)_{ij} = A_{ij} = 1-\delta_{ij}$ and $\pi_i=0$
+\inone{Then $M$ counts the number of substitutions, and pruning returns the \alert{most parsimonious} imputation of $\{ x_i \}$}
+\item A number of neat results for parsimony exist
+\inone{e.g. a branch-and-bound algorithm to find the most parsimonious tree}
+\item but parsimony is v restrictive ``model''; strong assumptions:
+ \itemb
+ \item all substitutions equally likely, no back-substitutions...
+ \item parsimony not really compatible w/ probabilistic methods
+ \iteme
+\iteme
+\end{frame}
+
+% \begin{frame}{Expression tree of $P(Y)$ showing functions}
+% 
+% \tiny
+% \Tree [.$\sum_{x_1}$ [.$\otimes$ $\pi_{x_1}$ [ .$\otimes$
+% [ .$\sum_{x_2}$ [ .$\otimes$ $\mxx{1}{2}$ [ .$\otimes$ [ .$\sum_{x_4}$ [ .$\otimes$ $\mxx{2}{4}$ $A_{x_4 y_4}$ ] ] [ .$\sum_{x_5}$ [ .$\otimes$ $\mxx{2}{5}$ $A_{x_5 y_5}$ ] ] ] ] ]
+% [ .$\sum_{x_3}$ [ .$\otimes$ $\mxx{1}{3}$ [ .$\otimes$ [ .$\sum_{x_6}$ [ .$\otimes$ $\mxx{3}{6}$ $A_{x_6 y_6}$ ] ] [ .$\sum_{x_7}$ [ .$\otimes$ $\mxx{3}{7}$ $A_{x_7 y_7}$ ] ] ] ] ]
+% ] ] ]
+% 
+% \end{frame}
+
+\section*{Summary}
+
+\begin{frame}{Summary}
+
+  % Keep the summary *very short*.
+  \begin{itemize}
+  \item Message-passing on phylogenetic trees
+   \itemb
+   \item Felsenstein's pruning algorithm
+   \item Elston-Stewart peeling algorithm
+   \iteme
+  \item Pulley principle \& reversibility
+  \end{itemize}
+
+\end{frame}
+
+\end{document}

@@ -1,0 +1,524 @@
+\documentclass{beamer}
+
+\input{../defs.tex}
+
+% workaround for beamer bug
+\providecommand\thispdfpagelabel[1]{}  % workaround
+
+% presentation
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage[english]{babel}
+% or whatever
+
+\usepackage[latin1]{inputenc}
+% or whatever
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+
+\title[Indels] % (optional, use only with long paper titles)
+{Insertions and deletions}
+
+\subtitle
+{Probabilistic models of indel evolution} % (optional)
+
+\author% [Holmes] (optional, use only with lots of authors)
+{I.~Holmes} % \inst{1} \and S.~Another\inst{2}
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[University of California, Berkeley] % (optional, but mostly needed)
+{
+%  \inst{1}%
+  Department of Bioengineering\\
+  University of California, Berkeley}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date%[Short Occasion] % (optional)
+{Spring semester}
+
+\subject{Talks}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+
+
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+
+\section{Mechanisms of sequence mutation}
+
+\begin{frame}{}
+
+\itemb
+\item Point substitution: the canonical models
+\item Context-dependent and multiple-nucleotide substitutions
+ \inone{e.g. CpG $\to$ 5-methyl-cytosine (5mC) $\to$ C-deamination $\to$ TpG}
+\item Insertions and deletions; mechanisms
+ \itemb
+ \item DNA foldback, cruciforms, etc; polymerase stutter; microsatellites
+ \item Transposition (DNA cut'n'paste; retrotransposition; rolling-circle); horizontal transfer
+ \iteme
+\item Duplications (local, nonlocal); inversions; whole-chromosome and -genome duplications, polyploidy
+\item Rearrangement
+\item Recombination; gene conversion
+\iteme
+
+\end{frame}
+
+\section{The ``links model'' and string transducers}
+
+\begin{frame}{}
+
+\itemb
+\item Motivation: how to handle gaps? Gaps as a fifth nucleotide in standard point substitution model: advantages (simplicity), drawbacks (irreversibility, ``ghost'' bases)
+\item Whole-sequence models: state space $\Omega^\ast$. Rate grammar notation: write mutation rules
+ \itemb
+ \item Point substitution with rate matrix ${\bf Q}$: rule is $AxB\ \to\ AyB:\ Q_{xy}$ where $A,B \in \Omega^\ast$ and $x,y \in \Omega$
+ \item Insertion: rule can be written $AC\ \to\ ABC$, etc.
+ \iteme
+\item How can we calculate pairwise likelihoods (i.e. matrix exponential) or multiple alignment likelihoods for such a model?
+At first glance, appears impossible (or very difficult): infinite-dimensional (albeit sparse) rate matrix
+where total mutation rate (and number of mutations) scales with sequence length.
+\item Under point substitution model, likelihood for whole alignment factorises into product of column likelihoods.
+This works because each column can be thought of as an indepedently evolving zone. Extension to indel models follows same idea of independent zones.
+\iteme
+\end{frame}
+
+\begin{frame}{}
+\itemb
+\item Thorne, Kishino, Felsenstein 1991. {\bf Links model.}
+ \itemb
+ \item First consider the following rate grammar: \\
+\begin{tabular}{l|rll|l}
+Event & \multicolumn{3}{c|}{Rule} & Rate \\
+\hline
+Substitution & $AxB$ & $\to$ & $AyB$ & $Q_{xy}$ \\
+Insertion & $AB$ & $\to$ & $AyB$ & $\lambda \pi_y$ \\
+Deletion & $AxB$ & $\to$ & $AB$ & $\mu$
+\end{tabular}
+ \item Here $A,B \in \Omega^\ast$, $x,y \in \Omega$, ${\bf Q}$ is a reversible Markov process on $\Omega$ with equilibrium $\pi$,
+$\lambda$ is a point insertion rate and $\mu$ is a point deletion rate
+ \iteme
+\iteme
+\end{frame}
+
+\begin{frame}{}
+\itemb
+\item Reversibility and equilibrium of the model
+ \itemb
+ \item Number of links in sequence evolves independently from actual nucleotides themselves
+ \item Let $n$ be sequence length (i.e. number of mortal links)
+  \itemb
+  \item $n$ evolves according to a classical ``linear birth-death process with constant immigration'' (in fact immigration rate = birth rate)
+  \item Total insertion rate (i.e. rate of $n \to n+1$) is $\lambda (n+1)$
+  \item Total deletion rate (i.e. rate of $n \to n-1$) is $\mu n$
+  \item If reversibility holds, then $P(n) \times \mbox{Rate}(n \to n+1) = P(n+1) \times \mbox{Rate}(n+1 \to n)$ where $P(n)$ is equilibrium length distribution
+  \item Thus $P(n) \lambda(n+1) = P(n+1) \mu(n+1)$ so that $P(n) = \kappa^n (1-\kappa)$ where $\kappa = \frac{\lambda}{\mu}$ i.e. geometric
+  \item NB for normalisation, $\kappa < 1 \Rightarrow \lambda < \mu$
+  \item Expected sequence length at equilbrium is $\frac{\kappa}{1-\kappa}$. As $\lambda \to \mu$, equilibrium sequence length $\to \infty$
+  \item Equation of state for $n(t)$. Here $P_t(n') = P(n(t)=n')$
+\[
+\derivop{t} P_t(n) = \lambda n P_t(n-1) + \mu (n+1) P_t(n+1) - (\lambda n + \mu (n+1)) P_t(n)
+\]
+Same as equation for immortal zone fates (see below)
+  \iteme
+ \item Clearly individual nucleotides are distributed according to $\pi$ at equilibrium
+(since newly-inserted nucleotides are also sampled from this distribution).
+So equilibrium probability distribution over sequences $X$ is
+\[
+P(X) = \kappa^{|X|} (1-\kappa) \prod_{i=1}^{|X|} \pi_{X_i}
+\]
+NB this is also the likelihood for generating $X$ from a single-state HMM with self-loop transition probability $\kappa$ and emit vector $\pi$.
+\\
+The mean sequence length is $\kappa/(1-\kappa)$ and this is also the ``tipping point'' above which the total deletion rate exceeds the total insertion rate.
+ \iteme
+\iteme
+\end{frame}
+
+\begin{frame}{}
+\itemb
+\item TK\&F introduced the following construction to help analyse this model (following Bishop \& Thompson, 1986)
+ \itemb
+ \item A biological sequence is modeled as a sequence of links: one ``immortal link'' followed by zero or more normal or ``mortal links''
+ \item Mortal and immortal links spawn new ``child links'' to their right (rate $\lambda$). Mortal links can also die (rate $\mu$).
+ \item Each mortal link corresponds to an observed, independently evolving nucleotide (or amino acid). The immortal link is invisible.
+(Without the immortal link, if the sequence ever reached zero length it would get irreversibly stuck.
+This might or might not be realistic, but one goal of Thorne {\em et al} was a reversible model.)
+ \item From the TKF 1991 paper:\\
+\framebox{\parbox{.8\textwidth}{``The insertion-deletion process is framed in terms
+of a birth-death process of these links.  Each link 
+evolves independently from all other link; a  birth 
+or death of one  link does not affect the probability 
+of a birth or death of any other link. Both types of 
+links can be associated with births. The birth  rate per normal link
+is equal to the birth rate per
+immortal link ($\lambda$). A newborn link is always a normal 
+link. We adopt the convention that it appears immediately to the right of its parent link.
+Accompanying  the birth of a normal  link  is  the  birth of a 
+DNA base immediately to the left of the newborn 
+link.  The probabilities that the newborn DNA base 
+will be A, G, T, or C are $\pi_A$, $\pi_G$, $\pi_T$ and $\pi_C$, respectively.  Normal  links are subject to death ($\mu$ is 
+the death  rate per normal link) but immortal links 
+are not.''}}
+ \iteme
+\iteme
+\end{frame}
+
+\begin{frame}{}
+
+Solving for conditional probabilities $P(\mbox{descendant}|\mbox{ancestor})$ in TKF91
+ \itemb
+ \item Consider an ancestral sequence with $n$ mortal links (and one immortal link)
+ \item Each ancestral link defines a zone that evolves independently from all other zones
+ \item Zones corresponding to mortal ancestral links can acquire new links, lose links (including the original mortal link) and even die off
+(i.e. lose all its links, and become inert)
+  \itemb
+  \item NB this implies the process w.r.t. zones is irreversible. Apparent paradox arises because we've introduced new information
+in the form of the zone (alignment) co-ordinates, and our original model did not promise to be reversible with respect to zones (alignments).
+  \item A specific consequence of fixing the zone co-ordinates is that the alignment
+\begin{tabular}{l} {\tt X-} \\ {\tt -X} \end{tabular}
+is distinct from the alignment
+\begin{tabular}{l} {\tt -X} \\ {\tt X-} \end{tabular},
+since the former implies a deletion followed by an insertion in the same zone,
+whereas the latter does not imply any chronological ordering on the insertion \& deletion events, since they occurred in different zones.
+(This asymmetry relates to the apparent contradiction to reversibility mentioned above. Both can, in fact, be ``fixed'' by swapping the order of such alignment columns when reversing the arrow of time.)
+  \iteme
+ \item The zone corresponding to the immortal link can acquire and lose new links, but never dies off
+\iteme
+\end{frame}
+
+\begin{frame}{}
+\itemb
+ \item Differential equations for zone fates. Suppose time $t$ has elapsed since ancestral sequence observed. Let
+  \itemb
+  \item $p_n(t)$ be the probability that $n$ mortal links are descended from a mortal link {\bf and that one of them is the original};
+  \item $q_n(t)$ be the probability that $n$ mortal links are descended from a mortal link {\bf and that the original died};
+  \item $r_n(t)$ be the probability that $n$ mortal links are descended from an immortal link.
+  \iteme
+Differential equations:
+\begin{eqnarray*}
+\derivop{t} p_n(t) & = & \lambda (n-1) p_{n-1}(t) + \mu n p_{n+1}(t) - (\lambda + \mu) n p_n(t) \\
+\derivop{t} q_n(t) & = & \lambda (n-1) q_{n-1}(t) + \mu (n+1) q_{n+1}(t) + \mu p_{n+1}(t) - (\lambda + \mu) n q_n(t) \\
+\derivop{t} r_n(t) & = & \lambda n r_{n-1}(t) + \mu (n+1) r_{n+1}(t) - (\lambda (n+1) + \mu n) r_n(t)
+\end{eqnarray*}
+Boundary conditions:
+\begin{eqnarray*}
+p_n(0) & = & \delta (n = 1) \\
+q_n(0) & = & 0 \\
+r_n(0) & = & \delta (n = 0)
+\end{eqnarray*}
+Solutions:
+\begin{eqnarray*}
+p_n(t) & = & \alpha \beta^{n-1} (1-\beta) \\
+q_0(t) & = & (1-\alpha) (1-\gamma) \\
+q_n(t) & = & (1-\alpha) \gamma \beta^{n-1} (1-\beta) \quad \mbox{for $n>0$} \\
+r_n(t) & = & \beta^n (1-\beta)
+\end{eqnarray*}
+where
+\begin{eqnarray*}
+\alpha(t) & = & \exp (-\mu t) \\
+\beta(t) & = & \frac{1 - \alpha(t) \exp(\lambda t)}{\kappa^{-1} - \alpha(t) \exp(\lambda t)} \\
+\gamma(t) & = & 1 - \frac{\beta(t)}{\kappa(1-\alpha(t))}
+\end{eqnarray*}
+ \item Thorne {\em et al} quote these results without derivation (they were obtained by comparison with formulae for similar generic birth-death processes).
+They can readily be verified.
+ \item Metzler argument: if $n$ is the no. of surviving links at time $t$, then $P(n \geq k+1|n \geq k)$ must be independent of $k$,
+since $n \geq k$ implies that there has been an available insertion site for time $t$
+  \inone{Holmes used this to derive numerical estimates of posterior expectations for number of indels}
+ \item Feller sketches a systematic approach that can be used to solve for $r_n(t)$ and guess forms of $p_n,q_n$:
+  \itemb
+   \item {\bf Linear birth-death process with birth rate $\lambda$, death rate $\mu$ and (constant) immigration rate $\lambda$}
+  \item Write down p.d.e. for generating function
+   \itemb
+   \item Introduce generating function $G(s,t) = \sum_{n=0}^\infty s^n r_n(t)$.
+The $r_n$ are recoverable as $r_n(t) = \left. \pderivn{G}{s}{n} \right|_{s=0}$
+   \item Let $D = \pderivop{s}$ and use the following operator table to build a p.d.e.:
+\begin{tabular}{|rcr|l|}
+\hline
+\multicolumn{3}{|r|}{Operator $L$}  & Coefficient of $s^n$ in $LG$ \\
+\hline
+& & 1 & $r_n$ \\
+$s D s$ & $=$ & $s \left( 1 + s D \right)$ & $n r_{n-1}$ \\
+& & $D$ & $(n+1) r_{n+1}$ \\
+$D s$ & $=$ & $1 + s D$ & $(n+1) r_n$ \\
+& & $s D$ & $n r_n$ \\
+\hline
+\end{tabular}
+\begin{eqnarray*}
+\pderiv{G}{t} & = & \left[ \lambda s \left( 1 + s D \right) + \mu D - \lambda \left( 1 + s D \right) - \mu s D \right] G \\
+& = & \lambda(s-1) G + (\lambda s - \mu)(s-1) \pderiv{G}{s}
+\end{eqnarray*}
+Can rewrite this as
+\[
+\frac{1}{\lambda(s-1)} \pderiv{G}{t} + (\mu/\lambda - s) \pderiv{G}{s} = G
+\]
+Boundary condition is $G(s,0) = 1$.
+   \item 
+   \iteme
+  \item Use method of characteristics to rewrite this p.d.e. as o.d.e.'s.
+   \itemb
+   \item Suppose $s=s(u)$ and $t=t(u)$. Then
+$\displaystyle
+\deriv{G}{u} = \pderiv{G}{t} \deriv{t}{u} + \pderiv{G}{s} \deriv{s}{u}
+$
+which looks like our p.d.e. if
+\begin{eqnarray*}
+\deriv{t}{u} & = & \frac{1}{\lambda (s-1)} \\
+\deriv{s}{u} & = & \mu/\lambda - s \\
+\deriv{G}{u} & = & G
+\end{eqnarray*}
+The general solution for $G$ is
+\[
+G(s,t) = g(v) e^u
+\]
+where $g(\cdot)$ is any function and $v$ is constant along a characteristic, so $dv/du=0$.
+\\
+Solving the o.d.e. for $s(u)$ we obtain
+$s = e^{-u} + \mu / \lambda$.
+\\
+Furthermore, on a characteristic curve, the following is true
+\[
+\deriv{t}{s} = \frac{dt/du}{ds/du} = \frac{1}{\lambda(s-1)(\mu/\lambda - s)}
+\]
+and hence
+\[
+\log \left| \frac{s - \mu / \lambda}{s - 1} \right| + (\mu - \lambda) t = \mbox{const.}
+\]
+The general solution for $G$ can thus be written
+\[
+G(s,t) = g \left( \frac{s - \mu / \lambda}{s - 1} e^{(\mu - \lambda) t} \right) (s - \mu / \lambda)^{-1}
+\]
+where $g(\cdot)$ is an arbitrary function, to be determined by the boundary condition -- which is $G(s,0)=1$, so
+\begin{eqnarray*}
+g \left( \frac{s - \mu / \lambda}{s - 1} \right) & = & s - \mu / \lambda \\
+g(v) & = & (\mu / \lambda - 1) \left( \frac{1}{1 - v} - 1 \right) \\
+G(s,t) & = & \frac{\mu / \lambda - 1}{\mu / \lambda - e^{(\lambda - \mu)t} - s \left( 1 - e^{(\lambda - \mu)t} \right)} \\
+r_n(t) & = & \left. \pderivn{G}{s}{n} \right|_{s=0} \\
+& = & \left. \frac{(\mu / \lambda - 1) \left( 1 - e^{(\lambda - \mu)t} \right)^n}{\left( \mu / \lambda - e^{(\lambda - \mu)t} + s \left( e^{(\lambda - \mu)t} - 1 \right) \right)^{n+1}} \right|_{s=0} \\
+& = & \left( 1 - \beta(t) \right) \beta(t)^n
+\end{eqnarray*}
+as expected.
+   \iteme
+%   \item Use of integrating factor...
+%    \itemb
+%    \item Consider the equation
+% $\displaystyle
+% y' + P(x)y = Q(x)
+% $.
+%    \item Multiply by integrating factor $M(x)$
+% to yield
+% $\displaystyle
+% M(x)y' + P(x)M(x)y = Q(x)M(x)
+% $.
+%    \item Can be rewritten
+% $\displaystyle
+% (M(x)y)' = Q(x)M(x)
+% $
+% if we choose $M(x)$ such that $M'(x) = M(x)P(x)$.
+%    \item Equivalently $M'/M = P$ and so
+% \begin{eqnarray*}
+% M(x) & = & \exp \left[ \int P(x) dx \right] \\
+% y(x) & = & \frac{\int Q(x) M(x) dx + C}{M(x)}
+% \end{eqnarray*}
+% where $C$ is a constant of integration.
+%    \iteme
+  \iteme
+ \item Karlin and McGregor analysed birth-death processes in detail,
+and found a series of orthogonal polynomials associated with transition probabilities of the process
+  \inone{Can this be used to get exact formulae posterior counts of the numbers of insertions and deletions?}
+ \iteme
+\end{frame}
+
+\begin{frame}{}
+TKF91 as a transducer and a Pair HMM
+ \itemb
+ \item Transducer: stochastic finite state machine that ``eats'' input symbols and ``emits'' output symbols,
+representing the action of a finite time interval $t$ (ancestor=input, descendant=output)
+  \itemb
+  \item States {\tt START, INSERT, WAIT, MATCH, DELETE, END}
+   \inone{{\tt WAIT} is a null state introduced for later convenience; it means ``wait for input symbol''}
+  \item A transducer is similar to a Pair HMM, but normalised differently
+   \inone{Forward likelihood is conditional $P(\mbox{des}|\mbox{anc})$ rather than joint $P(\mbox{anc},\mbox{des})$}
+  \item Emission probabilities $\exp({\bf Q}t)_{xy}$ ({\tt MATCH} state), $\pi_y$ ({\tt INSERT} state), $1$ ({\tt DELETE} state)
+  \item Transition matrix
+\begin{tabular}{r|cccccc}
+From/To & {\tt S} & {\tt I} & {\tt W} & {\tt M} & {\tt D} & {\tt E} \\
+\hline
+{\tt S} & . & $\beta$ & $1-\beta$ & . & . & . \\
+{\tt I} & . & $\beta$ & $1-\beta$ & . & . & . \\
+{\tt W} & . & . & . & $\alpha$ & $1-\alpha$ & 1 \\
+{\tt M} & . & $\beta$ & $1-\beta$ & . & . & . \\
+{\tt D} & . & $\gamma$ & $1-\gamma$ & . & . & . \\
+{\tt E} & . & . & . & . & . & .
+\end{tabular}
+(dots are zeroes)
+  \iteme
+ \iteme
+\end{frame}
+
+\begin{frame}{}
+Can obtain joint Pair HMM for likelihood $P(\mbox{anc},\mbox{des})$ by ``left-multiplying'' transducer by single-state HMM for ancestor
+  \itemb
+  \item Ancestor states {\tt S,I,E}; transition matrix
+\begin{tabular}{r|cccc}
+From/To & {\tt S} & {\tt I} & {\tt E} \\
+\hline
+{\tt S} & . & $\kappa$ & $1-\kappa$ \\
+{\tt I} & . & $\kappa$ & $1-\kappa$ \\
+{\tt E} & . & . & .
+\end{tabular}
+  \item Joint anc-des states {\tt SS, SI, SW, IM, ID, II, IW, EE}
+  \item Emission probabilities $\pi_x \exp({\bf Q}t)_{xy}$ ({\tt IM} state), $\pi_y$ ({\tt SI,II} states), $\pi_x$ ({\tt ID} state)
+  \item Transition matrix
+\begin{tabular}{r|ccccccccc}
+From/To & {\tt SS} & {\tt SI} & {\tt SW} & {\tt IM} & {\tt ID} & {\tt II} & {\tt IW} & {\tt EE} \\
+\hline
+{\tt SS} & . & $\beta$ & $1-\beta$ & . & . & . & . \\
+{\tt SI} & . & $\beta$ & $1-\beta$ & . & . & . & . & . \\
+{\tt SW} & . & . & . & $\kappa\alpha$ & $\kappa(1-\alpha)$ & . & . & $1-\kappa$ \\
+{\tt IM} & . & . & . & . & . & $\beta$ & $1-\beta$ & . \\
+{\tt ID} & . & . & . & . & . & $\gamma$ & $1-\gamma$ & . \\
+{\tt II} & . & . & . & . & . & $\beta$ & $1-\beta$ & . \\
+{\tt IW} & . & . & . & $\kappa\alpha$ & $\kappa(1-\alpha)$ & . & . & $1-\kappa$ \\
+{\tt EE} & . & . & . & . & . & . & . & .
+\end{tabular}
+  \item Here, in constructing transitions for the expanded transducer, we have used the general rule:
+{\em``update the rightmost transducer that is not in a {\tt WAIT} state; if this transducer outputs a symbol,
+   then recursively update any transducers to the right of it that can eat an input symbol coming from the left
+   (where end-of-sequence is counted as a symbol)''}
+   \inone{All transitions update one transducer only, except those from \{{\tt SW,IW}\} to \{{\tt IM,ID,EE}\}}
+  \item Note redundancy: can eliminate {\tt SW} and {\tt IW}, collapse {\tt SI} and {\tt II} together...
+   \inone{...in fact, for this model [TKF91], can collapse DP right down to one variable; see e.g. \Miklos {\em et al}}
+  \iteme
+\end{frame}
+
+\begin{frame}{}
+Consider also multiplying transducer by itself and summing out missing states
+  \itemb
+  \item Sequences $X \stackrel{t_1}{\to} Y \stackrel{t_2}{\to} Z$
+  \item Markov property: $P(Z|X,t_1+t_2) = \sum_Y P(Y|X,t_1) P(Z|Y,t_2)$
+  \item Can write an expanded transducer for $P(Y|X,t_1) P(Z|Y,t_2)$
+   \itemb
+   \item Joint $XY-YZ$ states: {\tt SS, SI, SW, IM, ID, II, IW, WW, MM, MD, MI, DW, EE}
+   \item Exercise: write out transition matrix \& emit probabilities
+   \iteme
+  \iteme
+\end{frame}
+
+\section{Multiple alignment with the links model}
+
+\begin{frame}{}
+
+\itemb
+\item Evolutionary HMMs
+ \inone{Exhaustive DP (c.f. Hein 2001)}
+\item MCMC and evolutionary HMMs
+ \itemb
+ \item Branch sampling; node sampling; aunt displacement; (parent sampling); sequence sampling
+ \item Chaining programs together via MCMC; {\tt tkfalign} and propose/accept/reject
+ \iteme
+\iteme
+
+\end{frame}
+
+\section{More realistic evolutionary models}
+
+\begin{frame}{}
+
+\itemb
+\item The long indel model
+ \itemb
+ \item Knudsen-Miyamoto transducer
+ \item \Miklos-Lunter-Holmes transducer
+ \iteme
+\item Short-range context-sensitive substitution models
+ \itemb
+ \item Siepel-Haussler approach: model $k$-mer as $\Omega^k$-state stochastic process $x_1(t), x_2(t) \ldots x_k(t)$
+  \itemb
+  \item Conditional probability of next aligned pair, given previous $k-1$ aligned pairs:
+$P(x_k(0),x_k(t)|x_1(0) \ldots x_{k-1}(0),x_1(t) \ldots x_{k-1}(t))$
+  \iteme
+ \item Lunter-Hein approach: model full $\Omega^L$ process.
+Rate matrix is sum of $k$-mer terms, some of which commute, some don't.
+Taylor series for matrix exponential can be factorised and solved by DP.
+ \item Short-range context-dependence: relevant for protein?
+Probably not for substitution (eg recent Brenner {\em et al} study)
+but maybe for indels (which might look like local duplications)
+ \iteme
+\item Short-range context-sensitive indel models
+ \inone{Motivation: many indels appear, empirically, to be miniature local duplications}
+\item Mutation-selection models
+ \inone{Description of model}
+\item Rearrangement models: combinatorial explosion in histories, MCMC slow
+ \itemb
+ \item Most authors write the genome in bigger units (e.g. identifiable genes or blocks of synteny, rather than individual nucleotides)
+ \item Hannenhalli \& Pevzner, 1999; Siepel, 2002; \Miklos, Bioinformatics 2003
+ \iteme
+\iteme
+
+\end{frame}
+
+
+
+
+\section*{Summary}
+
+\begin{frame}{Summary}
+
+  % Keep the summary *very short*.
+  \begin{itemize}
+  \item Indels
+  \end{itemize}
+
+\end{frame}
+
+
+\end{document}

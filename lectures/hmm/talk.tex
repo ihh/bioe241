@@ -1,0 +1,557 @@
+\documentclass{beamer}
+
+\input{../defs.tex}
+
+% workaround for beamer bug
+\providecommand\thispdfpagelabel[1]{}  % workaround
+
+% presentation
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage[english]{babel}
+% or whatever
+
+\usepackage[latin1]{inputenc}
+% or whatever
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+
+\title[HMMs] % (optional, use only with long paper titles)
+{Hidden Markov Models}
+
+\subtitle
+{Stochastic Regular Grammars} % (optional)
+
+\author% [Holmes] (optional, use only with lots of authors)
+{I.~Holmes} % \inst{1} \and S.~Another\inst{2}
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[University of California, Berkeley] % (optional, but mostly needed)
+{
+%  \inst{1}%
+  Department of Bioengineering\\
+  University of California, Berkeley}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date%[Short Occasion] % (optional)
+{Spring semester}
+
+\subject{Talks}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+
+
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+
+\section{Single-sequence hidden Markov models}
+
+
+
+\begin{frame}{}
+
+\itemb
+\item Early motivation: isochores
+ \itemb
+ \item Long regions of uniform GC content (which is correlated with gene density, recombination frequency...)
+  \itemb
+  \item e.g. Major Histocompatibility Complex (MHC) class II and class III sequences on human chromosome 6
+  \item Lengths 900.9 kb, 642.1 kb; GC-content 41\%, 52\%
+  \iteme
+ \item Gary Churchill: first Hidden Markov Model for isochore detection (1989)
+ \item Earliest non-thermodynamic hit to ``isochore'' on PubMed is 1986, Alonso {\em et al}
+ \item HMM analogy: occasionally dishonest casino (Durbin {\em et al})
+ \iteme
+\item Hidden Markov model: notation
+ \itemb
+ \item Let $x$ denote hidden state, $y$ observed symbol. State space includes START and END
+ \item Let $e(x,y)$ be probability of emitting character $y$ in state $x$
+ \item Let $t(i,j)$ be probability of transition to state $j$ if currently in state $i$
+ \iteme
+\item Idea of a particular partitioning as a ``path'' through the HMM
+ \itemb
+ \item Let $y_n$ be observed nucleotide at position $n$ and let $x_n$ be hidden state of position $n$
+  \itemb
+  \item Let $L$ be length of sequence
+  \item For convenience, set $x_0=$START and $x_{L+1}=$END
+  \item Let $Y=\{y_1 \ldots y_L\}$ represent entire observed sequence, $X=\{x_0 \ldots x_{L+1}\}$ hidden state sequence
+  \item Each $X=\{x_k\}$ represents a ``path'' (sketch); there are $\sim K^L$ possible paths for $K$ states
+  \iteme
+ \item Joint likelihood is $P(X,Y) = t(x_0,x_1) \prod_{k=1}^L e(x_k,y_k) t(x_k,x_{k+1})$
+  \inone{Note that $P(X,Y) \equiv P(X,Y|x_0)$. Conditioning on $x_0$ is assumed throughout}
+ \iteme
+\item Two questions, two algorithms. (i) Viterbi: what $X$ maximises $P(X,Y)$? (ii) Forward: what is $P(Y)$?
+\item Viterbi algorithm for finding ML hidden state path
+\begin{eqnarray*}
+\max_X P(X,Y) & = & \max_{x_L} \max_{x_{L-1}} \ldots \max_{x_1} t(x_0,x_1) \prod_{k=1}^L e(x_k,y_k) t(x_k,x_{k+1}) \\
+& = & \max_{x_L} t(x_L,x_{L+1}) e(x_L,y_L) \max_{x_{L-1}} t(x_{L-1},x_L) e(x_{L-1},y_{L-1}) \ldots \max_{x_1} t(x_1,x_2) e(x_1,y_1) t(x_0,x_1) \\
+& = & \max_{x_L} t(x_L,\mbox{END}) V_L(x_L)
+\end{eqnarray*}
+where
+\[
+V_n(x_n) = \left\{ \begin{array}{ll} \displaystyle
+e(x_n,y_n) \max_{x_{n-1}} t(x_{n-1},x_n) V_{n-1}(x_{n-1}) & \mbox{if $n > 0$} \\
+1 & \mbox{if $n=0$}
+\end{array} \right.
+\]
+Note that
+\[
+V_n(x_n) = \max_{x_1 \ldots x_{n-1}} P(x_1 \ldots x_n, y_1 \ldots y_n | x_0)
+\]
+or, in words, $V_n(x)$ is the maximum likelihood of any path ending in state $x$ and emitting symbols $y_1 \ldots y_n$.
+
+The ML state sequence, $\argmax_X P(X,Y)$, is recovered by {\bf traceback} from $V_L$ to $V_1$.
+\item Forward algorithm for summing over all possible hidden state paths
+\begin{eqnarray*}
+P(Y) & = & \sum_X P(X,Y) \\
+& = & \sum_{x_L} \sum_{x_{L-1}} \ldots \sum_{x_1} t(x_0,x_1) \prod_{k=1}^L e(x_k,y_k) t(x_k,x_{k+1}) \\
+& = & \sum_{x_L} t(x_L,x_{L+1}) e(x_L,y_L) \sum_{x_{L-1}} t(x_{L-1},x_L) e(x_{L-1},y_{L-1}) \ldots \sum_{x_1} t(x_1,x_2) e(x_1,y_1) t(x_0,x_1) \\
+& = & \sum_{x_L} t(x_L,\mbox{END}) F_L(x_L)
+\end{eqnarray*}
+where
+\[
+F_n(x_n) = \left\{ \begin{array}{ll} \displaystyle
+e(x_n,y_n) \sum_{x_{n-1}} t(x_{n-1},x_n) F_{n-1}(x_{n-1}) & \mbox{if $n > 0$} \\
+1 & \mbox{if $n=0$}
+\end{array} \right.
+\]
+Note that
+\[
+F_n(x_n) = P(x_n, y_1 \ldots y_n | x_0) = \sum_{x_1 \ldots x_{n-1}} P(x_1 \ldots x_n, y_1 \ldots y_n | x_0)
+\]
+or, in words, $F_n(x)$ is the sum of likelihoods of all paths ending in state $x$ and emitting symbols $y_1 \ldots y_n$.
+
+By analogy to Viterbi traceback, a ML state sequence can be sampled by
+stochastic traceback from $F_L$ to $F_1$.
+\item Implementation issues
+ \itemb
+ \item probability underflow for long sequences
+ \item slow floating-point multiply
+ \item motivation for (possibly discretized) log-space scores
+ \iteme
+\iteme
+
+\end{frame}
+
+\section{Posterior probabilities for single-sequence HMMs}
+
+\begin{frame}{}
+
+\itemb
+\item Definition of the posterior probability that position $n$ is in state $k$: sum over paths
+\[
+P(x_n=k|Y) = \frac{\sum_X P(X,Y) \delta(x_n=k)}{P(Y)}
+\]
+\item Splitting the path into three parts: $<n$, $=n$ and $>n$
+\[
+P(x_n|Y) = \sum_{x_1 \ldots x_{n-1}} \sum_{x_{n+1} \ldots x_L} \frac{P(x_1 \ldots x_n,y_1 \ldots y_n|x_0)\ P(x_{n+1} \ldots x_{L+1},y_{n+1} \ldots y_L|x_n)}{P(Y)}
+= \frac{F_n(x_n)\ B_n(x_n)}{P(Y)}
+\]
+where
+\[
+B_n(x_n) = P(x_{L+1},y_{n+1} \ldots y_L|x_n) = \sum_{x_{n+1} \ldots x_L} P(x_{n+1} \ldots x_{L+1}, y_{n+1} \ldots y_L|x_n)
+\]
+Likewise,
+\[
+P(x_n,x_{n+1}|Y) = \frac{F_n(x_n)t(x_n,x_{n+1})e(x_{n+1},y_{n+1})B_{n+1}(x_{n+1})}{P(Y)}
+\]
+and (useful for compression)
+\[
+P(y_{n+1}=k|y_1 \ldots y_n) = \frac{\sum_i \sum_j F_n(i) t(i,j) e(j,k)}{\sum_i F_n(i)}
+\]
+\item The Backward algorithm
+\[
+B_n(x_n) = \left\{ \begin{array}{ll} \displaystyle
+\sum_{x_{n+1}} t(x_n,x_{n+1}) e(x_{n+1},y_{n+1}) B_{n+1}(x_{n+1}) & \mbox{if $n < L$} \\
+t(x_L,\mbox{END}) & \mbox{if $n=L$}
+\end{array} \right.
+\]
+\item The Baum-Welch training algorithm
+ \itemb
+ \item Likelihood can be written in the form
+\[
+P(X,Y) = \left( \prod_{i,j} t(i,j)^{u(i,j)} \right) \left( \prod_{i,k} e(i,k)^{f(i,k)} \right)
+\]
+where $u(i,j)$ is the number of transitions $i \to j$ and $f(i,k)$ is the number of emissions of character $k$ from state $i$
+ \item Sufficient statistics for EM algorithm are therefore
+\begin{eqnarray*}
+\hat{t}(i,j) & = & \sum_{n=0}^L P(x_n=i,x_{n+1}=j|Y) \\
+\hat{e}(i,k) & = & \sum_{n=1}^L P(x_n=i|Y) \delta(y_n=k)
+\end{eqnarray*}
+where $\hat{t}$ and $\hat{e}$ are the posterior expectations of $u$ and $f$.
+Dirichlet (mixture) priors can be used for $t$ and $e$.
+% \item Lagrange multiplier derivation?
+ \item Note that $\hat{t}(i,j) = \pderiv{\log P(X)}{\log t(i,j)}$ and $\hat{e}(i,k)=\pderiv{\log P(X)}{\log e(i,k)}$
+ \iteme
+\item Implementation issues: log-space probability addition
+\[
+\log(e^a+e^b) = \max(a,b) + \oplus(|a-b|) \quad\quad\quad
+\oplus(|a-b|) = \log(1+e^{-|a-b|})
+\]
+If scores are discretized, can implement $\oplus$ as a lookup table for speed.
+\item Null states
+ \itemb
+ \item Sparse transition matrices are good (Forward/Backward and Viterbi time complexities are $\propto$ no. of transitions)
+ \item Convenience: reduce number of transitions (e.g. delete states of profile HMM)
+ \item Need to do a {\em topological sort} of null states so that they're filled in the correct order
+ \item Awkwardness: null cycles. Can always eliminate null states as follows
+\[
+{\bf t} = {\bf a} + {\bf b} + {\bf c} + {\bf d}
+ \quad\quad \mbox{where} \quad
+{\bf a} = \left( \begin{array}{ll} \ast & 0 \\ 0 & 0 \end{array} \right),
+{\bf b} = \left( \begin{array}{ll} 0 & \ast \\ 0 & 0 \end{array} \right),
+{\bf c} = \left( \begin{array}{ll} 0 & 0 \\ \ast & 0 \end{array} \right),
+{\bf d} = \left( \begin{array}{ll} 0 & 0 \\ 0 & \ast \end{array} \right)
+\]
+\[
+{\bf t}' = \left( \begin{array}{ll} \ast & 0 \\ 0 & 0 \end{array} \right)
+= {\bf a} + \sum_{n=0}^\infty {\bf bd}^n {\bf c} = {\bf a} + {\bf b} ({\bf I} - {\bf d})^{-1} {\bf c}
+\]
+where ${\bf a}$ (and ${\bf t}'$) contain emit$\to$emit transitions,
+ ${\bf b}$ emit$\to$null,
+ ${\bf c}$ null$\to$emit and
+ ${\bf d}$ null$\to$null.
+ \iteme
+\item Factor graph representation of HMM; similarity to pruning/peeling and parsimony (Forward-Backward $\subset$ Sum-Product)
+\item General-purpose HMM implementations: DART library (C++)
+\iteme
+
+\end{frame}
+
+\section{Pair Hidden Markov models}
+
+\begin{frame}{}
+
+\itemb
+\item Motivation: pairwise sequence alignment, pairwise genefinding, etc.
+\item Let $x$ denote hidden state, $y$ character in sequence $Y$, $z$ character in sequence $Z$
+\item Let $\Delta y(x)$ be 1 if state $x$ emits a character to $Y$, and 0 otherwise; likewise $\Delta z(x)=1$ iff $x$ emits to $Z$
+\item Emission probability $e(x,y,z)$ is defined as follows:
+ \itemb
+ \item If $\Delta y(x)=1$ and $\Delta z(x)=0$, then $x$ is called a {\bf delete} state and $e(x,y,z) \equiv e_d(x,y)$ is a function of $x$ and $y$ only
+ \item If $\Delta y(x)=0$ and $\Delta z(x)=1$, then $x$ is called an {\bf insert} state and $e(x,y,z) \equiv e_i(x,z)$ is a function of $x$ and $z$ only
+ \item If $\Delta y(x)=1$ and $\Delta z(x)=1$, then $x$ is called a {\bf match} state and $e(x,y,z) \equiv e_m(x,y,z)$ is a function of $x,y$ and $z$
+ \item If $\Delta y(x)=0$ and $\Delta z(x)=0$, then $x$ is called a {\bf null} state and $e(x,y,z)$ is a function of $x$ only (typically just 1)
+ \item We will assume for now that there are no null states
+ (apart from START and END).
+ \iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{}
+
+\itemb
+\item As before, $t(i,j)$ is the probability of transition to state $j$ if currently in state $i$
+\item Suppose sequence lengths are $K,L$ so observed data are $Y = \{ y_1 \ldots y_K \}$ and $Z = \{ z_1 \ldots z_L \}$
+\item Again we have a state path $x_1, x_2 \ldots x_N$
+ and for convenience we set $x_0=$START and $x_{N+1}=$END.
+ \itemb
+ \item Denote by $\Lambda_{kl}$ the event that there exists a {\em break} at $(k,l)$:
+\[
+\Lambda_{kl}\ \Rightarrow\ \exists n:
+\ \sum_{i=1}^n \Delta y(x_i)=k,
+\ \sum_{i=1}^n \Delta z(x_i)=l
+\]
+So $\Lambda_{kl}$ means that,
+at some point $n$ on the state path, the model
+has emitted $k$ symbols to $Y$ and $l$ symbols to $Z$.
+ \iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{}
+
+\itemb
+\item Viterbi
+\[
+V_{kl}(x_n) = \max_{x_1 \ldots x_{n-1}}
+P \left( \Lambda_{kl},x_1 \ldots x_n,y_1 \ldots y_k,z_1 \ldots z_l | x_0 \right)
+\]
+Recursion (assuming no null states)
+\[
+V_{kl}(x_n) = \left\{ \begin{array}{ll} \displaystyle
+e(x_n,y_k,z_l) \max_{x_{n-1}} t(x_{n-1},x_n)
+V_{k-\Delta y(x_n),l-\Delta z(x_n)}(x_{n-1}) & \mbox{if $k > 0$ or $l > 0$} \\
+1 & \mbox{if $k=l=0$ and $x_n=$START} \\
+0 & \mbox{if $k=l=0$ and $x_n\neq$START} \\
+0 & \mbox{if $k < 0$ or $l < 0$}
+\end{array} \right.
+\]
+\iteme
+
+\end{frame}
+
+\begin{frame}{}
+
+\itemb
+\item Forward
+\[
+F_{kl}(x_n)
+= P \left( \Lambda_{kl},x_n,y_1 \ldots y_k,z_1 \ldots z_l | x_0 \right)
+= \sum_{x_1 \ldots x_{n-1}}
+P \left( \Lambda_{kl},x_1 \ldots x_n,x_{N+1},y_1 \ldots y_k,z_1 \ldots z_l | x_0 \right)
+\]
+Recursion (assuming no null states)
+\[
+F_{kl}(x_n) = \left\{ \begin{array}{ll} \displaystyle
+e(x_n,y_k,z_l) \sum_{x_{n-1}} t(x_{n-1},x_n)
+F_{k-\Delta y(x_n),l-\Delta z(x_n)}(x_{n-1}) & \mbox{if $k > 0$ or $l > 0$} \\
+1 & \mbox{if $k=l=0$ and $x_n=$START} \\
+0 & \mbox{if $k=l=0$ and $x_n\neq$START} \\
+0 & \mbox{if $k < 0$ or $l < 0$}
+\end{array} \right.
+\]
+\iteme
+
+\end{frame}
+
+\begin{frame}{}
+
+\itemb
+\item Backward
+\[
+B_{kl}(x_n)
+= P \left( \Lambda_{kl},x_{N+1},y_{k+1} \ldots y_K,z_{l+1} \ldots z_L | x_n \right)
+= \sum_{x_{n+1} \ldots x_N}
+P \left( \Lambda_{kl},x_{n+1} \ldots x_{N+1},y_{k+1} \ldots y_K,z_{l+1} \ldots z_L | x_n \right)
+\]
+Recursion (assuming no null states)
+\[
+B_{kl}(x_n) = \left\{ \begin{array}{ll} \displaystyle
+\sum_{x_{n+1}}
+t(x_n,x_{n+1})
+e(x_{n+1},y_{k+1},z_{l+1})
+B_{k+\Delta y(x_n+1),l+\Delta z(x_n+1)}(x_{n+1}) & \mbox{if $k < K$ or $l < L$} \\
+t(x_n,\mbox{END}) & \mbox{if $k=K$ and $l=L$} \\
+0 & \mbox{if $k > K$ or $l > L$}
+\end{array} \right.
+\]
+\iteme
+
+\end{frame}
+
+\begin{frame}{}
+
+\itemb
+\item Evidence, posterior probabilities \& EM counts
+\begin{eqnarray*}
+P(Y,Z) & = & \sum_x F_{KL}(x) t(x,\mbox{END}) \\
+P(\Lambda_{kl},x_n|Y,Z) & = & \frac{F_{kl}(x_n) B_{kl}(x_n)}{P(Y)} \\
+P(\Lambda_{kl},x_n,x_{n+1}|Y) & = & \frac{F_{kl}(x_n) t(x_n,x_{n+1}) e(x_{n+1},y_{k+1},z_{l+1})
+B_{k+\Delta y(x_n+1),l+\Delta z(x_n+1)}(x_{n+1})}{P(Y)} \\
+\hat{t}(i,j) & = & \sum_{k=0}^K \sum_{l=0}^L P(\Lambda_{kl},x_n=i,x_{n+1}=j|Y,Z) \\
+\hat{e}_m(x,y,z) & = & \sum_{k:y_k=y}\ \sum_{l:z_l=z}\ P(\Lambda_{kl},x_n=x|Y,Z) \\
+\hat{e}_d(x,y) & = & \sum_{k:y_k=y}\ \sum_{l=0}^L\ P(\Lambda_{kl},x_n=x|Y,Z) \\
+\hat{e}_i(x,z) & = & \sum_{k=0}^K\ \sum_{l:z_l=z}\ P(\Lambda_{kl},x_n=x|Y,Z)
+\end{eqnarray*}
+\iteme
+
+\end{frame}
+
+\begin{frame}{}
+
+Decision theory (``optimal accuracy'').
+ \itemb
+ \item Decision theory: maximise expected ``reward'', making use of the posterior distribution
+ \item Overlap score: an objective function (i.e. reward) that compares predicted alignment $\alpha$ with true alignment $\alpha'$
+  \itemb
+  \item Overlap score is $|\alpha \cap \alpha'|$, where an alignment is viewed as a set of match co-ords $\alpha = \left\{ (k_1,l_1), (k_2,l_2) \ldots \right\}$
+  \item Several other good objective functions (e.g. ``Cline shift score''); overlap is simpler, albeit less realistic
+   \inone{NB also $\delta(\alpha=\alpha')$ which only rewards perfect alignments, yielding a multiplicative, Viterbi-like recursion}
+  \item Example criteria: how good is alignment for structure prediction? homology detection? benchmark of choice?
+   \inone{e.g. PROBCONS (Batzoglou {\em et al}) uses the sum-of-pairs score, same as the BAliBASE benchmark}
+  \iteme
+ \item Posterior expectation of overlap score for an alignment (NB only match states have $\Delta y(x) \Delta z(x) \neq 0$)
+\[
+A[\alpha] = \sum_{(k,l) \in \alpha} P(\mbox{match},k,l) \quad\quad\quad
+P(\mbox{match},k,l) = \sum_x \Delta y(x) \Delta z(x) P(\Lambda_{kl},x_n=x)
+\]
+ \item Optimal accuracy recursion: let $\alpha_{kl}$ be any alignment up to $(k,l)$, so $k' \leq k$ and $l' \leq l$ for all $(k',l') \in \alpha$. Then
+\[
+O_{kl} = \max_{\alpha_{kl}} A \left[ \alpha_{kl} \right] = \left\{ \begin{array}{ll}
+\max \left( \begin{array}{l} O_{k-1,l-1} + P(\mbox{match},k,l), \\ O_{k,l-1}, \\ O_{k-1,l} \end{array} \right) & \mbox{if $k \geq 0$ and $l \geq 0$} \\
+0 & \mbox{otherwise}
+\end{array} \right.
+\]
+ \item Optimal alignment $\alpha$ recovered by traceback from $O_{KL}$.
+ \iteme
+
+\end{frame}
+
+\begin{frame}{}
+
+\itemb
+\item Dynamic programming algorithms whose finite state automata are almost or exactly Pair HMMs
+ \itemb
+ \item Needleman-Wunsch; Smith-Waterman; Gotoh; Altschul, Proteins 1998
+ \item General implementations: DART library (C++), Exonerate (C), HMMoC (Java/C++), ...
+ \iteme
+\iteme
+
+\end{frame}
+
+\section{Evolutionary Hidden Markov models}
+\label{sec:EvolutionaryHMM}
+
+\begin{frame}{}
+
+\itemb
+\item Can readily extend the Pair HMM to a multi-sequence HMM for multiple sequence alignment
+ \itemb
+ \item Arbitrary number $N$ of output sequences $Y^{(1)}, Y^{(2)}, Y^{(3)} \ldots Y^{(N)}$ of lengths $L_1 \ldots L_N$ (see e.g. Holmes 2003)
+ \item Dynamic programming time/memory complexity is $O(\prod_n L_n)$---not cheap
+ \item Ultimately, would like to structure $\Delta Y^{(n)}(x)$, $t(x,x')$ and $e(x,y^{(1)} \ldots y^{(N)})$ according to some underlying phylogenetic tree
+  \inone{The DP algorithms can also be tree structured, c.f. ``progressive alignment''}
+ \item For now, we ignore phylogenetic structure of indels ($\Delta$,$t$) and concentrate on substitution model ($e$)
+ \iteme
+\item Initial, simplistic, restrictive concept of Evolutionary HMM, lacking a good gap model:
+ \itemb
+ \item {\bf A single-sequence HMM that emits phylogenetically-correlated multiple alignment columns, instead of single characters.}
+ \item Follows e.g. Goldman, Thorne \& Jones, 1996 ({\em ``Using evolutionary trees in protein secondary structure prediction...''})
+ \item For now, gaps will be glossed over heuristically (disallowed/treated as wildcards/excessively gappy columns discarded/etc.)
+ \iteme
+\item For a tree with $N$ leaves, the emitted symbol alphabet is $\Omega^N$ where $\Omega$ is the single-character alphabet
+\item Now the emission function $e(x,{\bf y)}$ for ${\bf y} \in \Omega^N$ is expensive (and unnecessary) to tabulate
+ \itemb
+ \item We can implement it as an instance of pruning instead: DP within DP
+ \item Assume an underlying continuous-time discrete-state Markov chain with rate matrix ${\bf R}^{(x)}$ and initial distribution $\pi^{(x)}$
+ \item Let $e(x,{\bf y})$ be probability of observing characters ${\bf y}$ at (leaf) nodes of a phylogenetic tree, with this process
+  \inone{Tree, like alignment, will be specified as an input to our DP recursions}
+ \iteme
+\item The counts $\hat{t}(x,x')$ are still relevant, but $\hat{e}(x,{\bf y})$ are used to accumulate EM update counts for ${\bf R}^{(x)}$
+ \inone{Can update $t$'s and ${\bf R}^{(x)}$'s simultaneously or asynchronously; c.f. Neal and Hinton}
+\item Many applications in genomic biology (see class projects)
+ \itemb
+ \item Annotation of multiple alignments of DNA, RNA or protein sequences
+ \item Isochores; gene prediction; DNA-protein binding site modeling and analysis; protein transmembrane structure, signal peptide, domain profiles... etc.
+ \iteme
+\item Implementation: {\tt xrate} (distributed with the DART library)
+ \itemb
+ \item S-expressions for the underlying alignment grammar
+  \itemb
+  \item Here ``alignment grammar'' means the alphabet $\Omega$, the HMM transition matrix $t$, the $\Delta$'s, the ${\bf R}$'s and the $\pi$'s
+  \item More generally, can use stochastic context-free grammars as well as HMMs, \& states can emit several co-evolving columns
+  \iteme
+ \item Stockholm format for alignment, tree, Viterbi annotation, likelihoods and posterior probabilities
+  \inone{Allows internal nodes as well as leaves to be specified}
+ \item By default, gaps in the multiple alignment are treated as wildcards (unobserved character is summed over)
+  \inone{A smarter handling of gaps soon leads us to indel rate models and so-called {\bf ``Statistical Alignment''}}
+ \item Log messages (type {\tt xrate -help} and {\tt xrate -loghelp})
+ \item Command-line options (type {\tt xrate -help})
+ \iteme
+\iteme
+
+\end{frame}
+
+\section{Discriminative models and conditional random fields}
+\label{sec:DiscriminativeHMMs}
+
+\begin{frame}{}
+
+\itemb
+\item HMMs model $P(Y) = \sum_X P(X,Y)$ ({\em generative} modeling). ML training maximizes this probability.
+\item Intuitively, since we are interested in predicting $X$ correctly, it may make more sense to model conditional probability $P(X|Y)$ ({\em discriminative} modeling)
+\item Consider the conditional likelihood for an HMM, expressed in terms of the {\em feature vector} $\{u,f\}$ implied by $X$:
+\[
+\log P(X|Y) = \frac{1}{P(Y)} \exp \left( \sum_{i,j} u(i,j) \log t(i,j) + \sum_{i,k} f(i,k) \log e(i,k) \right)
+\]
+where $P(Y)$ is computed by the Forward algorithm.
+\item We can write down a likelihood $P(X|Y)$ for a similarly trellis-structured graphical model as follows
+\[
+P(X|Y) = \frac{1}{Z} \exp \left( \sum_{i,j} u(i,j) a(i,j) + \sum_{i,k} f(i,k) b(i,k) \right)
+\]
+where $Z$ is a partition function (computed by a Forward-like sum-product algorithm)
+\[
+Z = \sum_{X'} \exp \left( \sum_{i,j} u_{X'}(i,j) a(i,j) + \sum_{i,k} f_{X'}(i,k) b(i,k) \right)
+\]
+For equivalence with the HMM, set $a(i,j)=\log t(i,j)$ and $b(i,k)=\log e(i,k)$.
+\item A {\em linear-chain conditional random field} is essentially such a trellis-structured model,
+lacking the normalization constraints on the parameters $\theta=\{a,b\}$ that are implicit in the generative HMM
+ \itemb
+ \item Sutton \& McCallum, ``An Introduction to Conditional Random Fields for Relational Learning''
+ \item Lafferty, McCallum \& Pereira, ``Conditional Random Fields: Probabilistic Models for Segmenting and Labeling Sequence Data''
+ \iteme
+\item To avoid overfitting, and in place of the normalization constraints,
+it is useful to add a {\em regularization} term, e.g. a Gaussian prior on $a()$ and $b()$ with variance $\sigma^2$, penalizing large weights.
+Then the function to be optimized is
+\[
+\ell(\theta) = \log P(X|Y) - \sum_{i,j} \frac{a(i,j)^2}{2\sigma^2} + \sum_{i,k} \frac{b(i,k)^2}{2\sigma^2}
+\]
+\item Parameter estimation proceeds by {\bf numerical optimization} of $\ell(\theta)$, typically using quasi-Newton algorithms
+ \inone{e.g. the BFGS algorithm: Dimitri P. Bertsekas. Nonlinear Programming. Athena Scientific, 2nd edition, 1999}
+\item The partial derivatives $\pderiv{\ell}{a(i,j)}$ and $\pderiv{\ell}{b(i,k)}$ are computed by direct analogy to $\hat{t}(i,j)$ and $\hat{u}(i,k)$ in Baum-Welch.
+\item In the absence of normalization constraints, we are free to add more ``features'' without having to directly account for them by subdividing the state space of the HMM.
+For example: a run of T's, a palindromic motif, etc.
+In the generative (HMM) view, all such features must be explicitly identified with a path through the model, so that nothing is counted more than once.
+In a discriminative framework, it doesn't matter if a residue is counted twice.
+\item In the trellis factor graph view, functions relating $x_i$ and $y_i$ are $P(x_i|Y)$ rather than $P(y_i|x_i)$
+\item HMMs and linear CRFs form what Ng and Jordan (2002) call a ``generative-discriminative pair''.
+ \inone{Other such pairs include naive Bayes {\em vs} logistic regression.}
+\iteme
+
+\end{frame}
+
+\section*{Summary}
+
+\begin{frame}{Summary}
+
+  % Keep the summary *very short*.
+  \begin{itemize}
+  \item HMMs
+  \end{itemize}
+
+\end{frame}
+
+
+\end{document}

@@ -1,0 +1,42 @@
+\usepackage{../parsetree}
+\usepackage{../qtree}
+\input{../psfig.sty}
+
+\newcommand\mytitle[1]{\title{\LARGE Probabilistic Modeling in Computational Biology \\ #1} \author{Ian Holmes} \date{} \maketitle \tableofcontents}
+
+\newcommand\mysize{\large}
+
+\newcommand\topic[1]{\newpage \section{#1}}
+
+\newcommand\itemb{\begin{itemize}}
+\newcommand\iteme{\end{itemize}}
+\newcommand\descb{\begin{description}}
+\newcommand\desce{\end{description}}
+\newcommand\enumb{\begin{enumerate}}
+\newcommand\enume{\end{enumerate}}
+
+\newcommand\inone[1]{\itemb \item #1 \iteme}
+
+\newcommand\expect[1]{\langle #1 \rangle}
+\newcommand\var[1]{\mbox{var}\{#1\}}
+\newcommand\cov[1]{\mbox{cov}\{#1\}}
+
+\newcommand\pderiv[2]{\frac{\partial {#1}}{\partial {#2}}}
+\newcommand\pderivn[3]{\frac{\partial^{#3} {#1}}{\partial {#2}^{#3}}}
+\newcommand\pderivop[1]{\frac{\partial}{\partial {#1}}}
+\newcommand\pderivopn[2]{\frac{\partial^{#2}}{\partial {#1}^{#2}}}
+
+\newcommand\deriv[2]{\frac{d {#1}}{d {#2}}}
+\newcommand\derivn[3]{\frac{d^{#3} {#1}}{d {#2}^{#3}}}
+\newcommand\derivop[1]{\frac{d}{d {#1}}}
+\newcommand\derivopn[2]{\frac{d^{#2}}{d {#1}^{#2}}}
+
+\newcommand\binomial[2]{\left( \begin{array}{c} #1 \\ #2 \end{array} \right)}
+
+\newcommand\notsum[1]{\sum_{ \sim \{ #1 \} }}
+\newcommand\msg[2]{\mu_{#1 \to #2}}
+
+\newcommand\argmax{\mbox{argmax}}
+\newcommand\argmin{\mbox{argmin}}
+
+\newcommand\Miklos{Mikl\`{o}s}

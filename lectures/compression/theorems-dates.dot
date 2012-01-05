@@ -1,0 +1,7 @@
+digraph {
+ j [label="Jensen's inequality (1906)"];
+ g [label="Gibbs' inequality (18??)"];
+ k [label="Kraft's inequality (1949)"];
+ s [label="Shannon's source coding theorem (1948)"];
+ j -> g -> k -> s;
+}
