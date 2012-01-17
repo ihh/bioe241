@@ -1,5 +1,43 @@
 \chapter{Homology search}
 
 Goal of this lab:
-Use profile HMM training and search tools to build a family of homologous protein domain sequences.
+Use HMMer \cite{FinnClementsEddy2011} and other tools to build and use a homology profile from a family of homologous protein domain sequences.
 
+\section{Download and install DART}
+
+This lab does not use the DART software, but many of the other labs do,
+and the DART software contains some tools for working with the Stockholm-format files that HMMer also uses.
+
+Download and install DART from \url{http://biowiki.org/DownloadingDart}
+
+The tools for manipulating Stockholm format are described at \url{http://biowiki.org/StockholmTools}
+and located in {\tt dart/perl}.
+
+\section{Download and install MUSCLE}
+
+MUSCLE \cite{Edgar2004b} is a fast multiple alignment program.
+Source code, and binaries for several platforms, are provided.
+Download it from \url{http://www.drive5.com/muscle/}
+
+\section{Download and install HMMer}
+
+Download the HMMer source code from \url{http://hmmer.janelia.org/}
+
+Configure and install the software as per the instructions in the User Guide.
+
+\section{Follow the tutorial in the HMMer user guide}
+
+The HMMer distribution contains example files for a simple tutorial (chapter 3 of the User Guide).
+The examples include several protein domains: globins, fibronectin type III domains, the {\em Drosophila} Sevenless protein, and protein kinases.
+
+Work through this tutorial.
+Ensure that you are able to complete all the examples.
+
+\section{Use external tools to manipulate the HMMer files}
+
+A few exercises to go slightly beyond the HMMer tutorial:
+\begin{itemize}
+\item Convert the Stockholm-format HMMer example alignments into FASTA format, using the {\tt dart/perl/stockholm2fasta.pl} tool.
+Try to generate both gapped and ungapped FASTA format (hint: use the {\tt -h} option to {\tt dart/perl/stockholm2fasta.pl} to list other command-line options)
+\item Use MUSCLE to build an alignment from the ungapped FASTA-format sequences, then convert to Stockholm using {\tt dart/perl/fasta2stockholm.pl}
+\end{itemize}
