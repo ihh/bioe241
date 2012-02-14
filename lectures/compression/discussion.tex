@@ -1,0 +1,39 @@
+\documentclass{article}
+\pagestyle{empty}
+
+\begin{document}
+
+\section*{Papers}
+
+\begin{itemize}
+\item Matsumoto {\em et al}, 2000. {\bf Biological sequence compression algorithms.}
+% \alert{Finds repeats, palindromes; c.f. LZ77, LZ78}
+\item Chen {\em et al}, 2002. {\bf DNACompress: fast and effective DNA sequence compression.}
+% \alert{Finds repeats}
+\item Christley {\em et al}, 2009. {\bf Human genomes as email attachments.}
+% \alert{James Watson's genome in 4MB}
+\item Baldi {\em et al}.
+{\bf Data structures and compression algorithms for high-throughput sequencing technologies.}
+BMC Bioinformatics, 2010.
+\item Birney {\em et al}.
+{\bf Efficient storage of high throughput sequencing data using reference-based compression.}
+Genome Research, 2011.
+\end{itemize}
+
+\section*{Questions}
+
+\begin{enumerate}
+\item What are the stated applications of each tool? How broadly/narrowly focused are they?
+\item What codes are used? What kind of redundancy or pattern is being compressed by these codes?
+\item Can you go as far as identifying the probability distribution that these codes are (near-)optimal for?
+\item Does the paper describe a proof-of-concept, a prototype implementation, or a ready-to-use software package?
+\item What compression ratio is claimed (if any)? Are theoretical limits discussed?
+\item Does the paper describe benchmarks? If so, what? Are other programs compared, or any standard metrics established?
+\item If the codec is statistical, or otherwise involves parameterization from a training set, what corpus was used to optimize it?
+\item Do the papers cite each other? Do they discuss similarities or differences between each other? Can you make any additional comparisons between the papers?
+\item Can you think of any redundancies or patterns in the datasets-to-be-compressed that would be missed by these approaches?
+\item Are there any other notable aspects or results of the papers?
+\end{enumerate}
+¯
+
+\end{document}
