@@ -1,0 +1,138 @@
+\documentclass{beamer}
+
+\input{../defs.tex}
+
+% workaround for beamer bug
+\providecommand\thispdfpagelabel[1]{}  % workaround
+
+% presentation
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage[english]{babel}
+% or whatever
+
+\usepackage[latin1]{inputenc}
+% or whatever
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+
+\title[Variational] % (optional, use only with long paper titles)
+{Variational Approximations}
+
+% \subtitle
+% {The subtitle} % (optional)
+
+\author% [Holmes] (optional, use only with lots of authors)
+{I.~Holmes} % \inst{1} \and S.~Another\inst{2}
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[University of California, Berkeley] % (optional, but mostly needed)
+{
+%  \inst{1}%
+  Department of Bioengineering\\
+  University of California, Berkeley}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date%[Short Occasion] % (optional)
+{Spring semester}
+
+\subject{Talks}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+
+
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+\section{The variational approximation}
+
+\begin{frame}{General form}
+
+Let $(x,y)$ be summary statistics for hidden \& observed data.
+
+Let $P(x,y|\theta)$ be the ``true'' likelihood model.
+
+This implies a posterior distribution $P(x|y,\theta)$ over the hidden data.
+
+Let $q(x|\phi)$ be an approximation to this posterior,
+using variational parameters $\phi$
+that we are free to change.
+
+Define
+\begin{eqnarray*}
+L(\theta,\phi) & = & \log P(y|\theta) - D\left(q(x|\phi)||P(x|y,\theta)\right) \\
+& = & \langle \log P(x,y|\theta) \rangle_{q(x|\phi)} - \langle \log q(x|\phi) \rangle_{q(x|\phi)}
+\end{eqnarray*}
+
+where $D(p||q)$ is the relative entropy.
+
+\end{frame}
+
+
+\begin{frame}{Variational lower bound}
+
+\begin{eqnarray*}
+L(\theta,\phi) & = & \log P(y|\theta) - D\left(q(x|\phi)||P(x|y,\theta)\right) \\
+& = & \langle \log P(x,y|\theta) \rangle_{q(x|\phi)} - \langle \log q(x|\phi) \rangle_{q(x|\phi)}
+\end{eqnarray*}
+
+By Gibbs' inequality ($D(p||q) \geq 0$), $L$ is a lower bound for the log-likelihood, $\log P(y|\theta)$.
+
+The variational lower bound is
+\[
+L\ast(\theta) = \argmax_{\phi} L(\theta,\phi)
+\]
+which is as close as we can get this lower bound to the true log-likelihood.
+
+\end{frame}
+
+
+\end{document}
