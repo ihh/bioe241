@@ -241,7 +241,8 @@ L_p(C) = \expect{l(x)}_p
 \[
 L_p(C) \geq H_p
 \]
-for any uniquely decodable code $C$.
+for any uniquely decodable code $C$. \\
+(Technically, this is the {\em converse} of the SCT; the SCT itself states that the equality is asymptotically achievable.)
 \item The equality holds if $l(x) = h(x) \quad \forall x$
 \iteme
 
@@ -327,7 +328,7 @@ z \leq 1
 
 \end{frame}
 
-\begin{frame}{Proof of Source Coding Theorem}
+\begin{frame}{Proof of (converse) Source Coding Theorem}
 
 \itemb
 \item Recall that
@@ -528,6 +529,7 @@ Each of these is optimal for some probability distribution: \\
  \item Sort all rotations of text, then take last column
  \inone{Invertible permutation of input string}
  \item Also has some excellent properties as a \alert{substring index}
+ \inone{\alert{FM Index} ---  {\bf Opportunistic Data Structures with Applications} Ferragina and Manzini (2000)}
 \iteme
 \item Turns repeated motifs $\leftrightarrow$ repeated characters
  \inone{Can then compress e.g. with run-length encoding or order-$N$ Markov}
