@@ -29,7 +29,7 @@
 
 
 \title[Variational] % (optional, use only with long paper titles)
-{Variational Approximations}
+{Variational Methods}
 
 % \subtitle
 % {The subtitle} % (optional)
@@ -96,11 +96,10 @@
 
 \begin{frame}{General form}
 
-Let $(x,y)$ be summary statistics for hidden \& observed data.
+Let $(x,y)$ denote hidden \& observed data.
 
-Let $P(x,y|\theta)$ be the ``true'' likelihood model.
-
-This implies a posterior distribution $P(x|y,\theta)$ over the hidden data.
+Let $P(x,y|\theta)$ be the ``true'' likelihood model,
+implying a posterior distribution $P(x|y,\theta)$ over the hidden data.
 
 Let $q(x|\phi)$ be an approximation to this posterior,
 using variational parameters $\phi$
@@ -112,7 +111,7 @@ L(\theta,\phi) & = & \log P(y|\theta) - D\left(q(x|\phi)||P(x|y,\theta)\right) \
 & = & \langle \log P(x,y|\theta) \rangle_{q(x|\phi)} - \langle \log q(x|\phi) \rangle_{q(x|\phi)}
 \end{eqnarray*}
 
-where $D(p||q)$ is the relative entropy.
+where $D(q||p)$ is the relative entropy.
 
 \end{frame}
 
@@ -128,9 +127,29 @@ By Gibbs' inequality ($D(p||q) \geq 0$), $L$ is a lower bound for the log-likeli
 
 The variational lower bound is
 \[
-L^\ast(\theta) = \max_{\phi} L(\theta,\phi)
+L^\ast(\theta) = \max_{\phi} L(\theta,\phi) = L(\theta,\phi^\ast)
 \]
 which is as close as we can get this lower bound to the true log-likelihood.
+
+Often, $\phi^\ast=\phi^\ast(\theta)$ is found by iterative solution.
+
+\end{frame}
+
+
+\begin{frame}{Maximizing the lower bound}
+
+\begin{eqnarray*}
+L(\theta,\phi) & \equiv & L(\theta,\phi,\phi) \\
+L(\theta,\phi_0,\phi_1) & = & \langle \log P(x,y|\theta) \rangle_{q(x|\phi_0)} - \langle \log q(x|\phi_1) \rangle_{q(x|\phi_0)}
+\end{eqnarray*}
+
+This relaxed form may offer an iterative-style solution for $\phi^\ast$,
+e.g. hoping for a convergence of this recursion:
+\begin{eqnarray*}
+\phi^\ast & = & \lim_{n \to \infty} \phi_n \\
+\phi_1 & = & \mbox{some initial guess} \\
+\phi_{n+1} & = & \argmax_{\phi} \left[ L(\theta,\phi_n,\phi) + \mbox{Lagrange constraints} \right]
+\end{eqnarray*}
 
 \end{frame}
 
