@@ -98,21 +98,22 @@
 
 Let $(x,y)$ denote hidden \& observed data.
 
-Let $P(x,y|\theta)$ be the ``true'' likelihood model,
-implying a posterior distribution $P(x|y,\theta)$ over the hidden data.
+Let $P(x,y|\theta)$ be the ``true'' likelihood model, \\
+implying an evidence $P(y|\theta)$ for the observed data, \\
+and a posterior distribution $P(x|y,\theta)$ over the hidden data.
 
-Let $q(x|\phi)$ be an approximation to this posterior,
+Let $q(x|\phi)$ be a separable approximation to this posterior,
 using variational parameters $\phi$
-that we are free to change.
+to approximate the pair $(y,\theta)$.
 
-Define
+With $\langle f \rangle_q \equiv \sum_x q(x|\phi) f(x,\ldots)$, define
 \begin{eqnarray*}
 L(y;\theta,\phi) & = & \log P(y|\theta) - D\left(q||P(x|y,\theta)\right) \\
 & = & \langle \log P(x,y|\theta) \rangle_q + S\left( q \right)
 \end{eqnarray*}
 
-where $D(p||q) = \langle \log (p/q) \rangle_p$ is the relative entropy
-and $S(p) = -\langle \log p \rangle_p$ is the entropy.
+where $S(q) = -\langle \log q \rangle_q$ is the Shannon entropy
+and $D(q||r) = \langle \log (q/r) \rangle_q$ is the relative entropy.
 
 \end{frame}
 
@@ -124,7 +125,7 @@ L(y;\theta,\phi) & = & \log P(y|\theta) - D\left(q||P(x|y,\theta)\right) \\
 & = & \langle \log P(x,y|\theta) \rangle_q + S\left( q \right)
 \end{eqnarray*}
 
-By Gibbs' inequality ($D(p||q) \geq 0$), $L$ is a lower bound for the log-likelihood, $\log P(y|\theta)$.
+By Gibbs' inequality ($D(q||r) \geq 0$), $L$ is a lower bound for the log-likelihood ($\log P(y|\theta)$).
 The variational lower bound is the highest that we can get this lower bound
 
 \[
@@ -133,7 +134,7 @@ L^\ast(y;\theta) = \max_{\phi} L(y;\theta,\phi) = L(y;\theta,\phi^\ast)
 
 Doing this effectively seems to require
  a $q(x|\phi)$ that is a sufficiently flexible fit to $P(x|y,\theta)$,
- a closed form for $L$,
+ a closed form for $L = \langle \log P(x,y|\theta) \rangle_q + S(q)$,
  and an approach to solving $\frac{\partial{L}}{\partial{\phi}} = 0$.
 
 \end{frame}
