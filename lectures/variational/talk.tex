@@ -107,11 +107,12 @@ that we are free to change.
 
 Define
 \begin{eqnarray*}
-L(y;\theta,\phi) & = & \log P(y|\theta) - D\left(q(x|\phi)||P(x|y,\theta)\right) \\
-& = & \langle \log P(x,y|\theta) \rangle_{q(x|\phi)} - \langle \log q(x|\phi) \rangle_{q(x|\phi)}
+L(y;\theta,\phi) & = & \log P(y|\theta) - D\left(q||P(x|y,\theta)\right) \\
+& = & \langle \log P(x,y|\theta) \rangle_q + S\left( q \right)
 \end{eqnarray*}
 
-where $D(q||p)$ is the relative entropy.
+where $D(p||q) = \langle \log (p/q) \rangle_p$ is the relative entropy
+and $S(p) = -\langle \log p \rangle_p$ is the entropy.
 
 \end{frame}
 
@@ -119,38 +120,21 @@ where $D(q||p)$ is the relative entropy.
 \begin{frame}{Variational lower bound}
 
 \begin{eqnarray*}
-L(y;\theta,\phi) & = & \log P(y|\theta) - D\left(q(x|\phi)||P(x|y,\theta)\right) \\
-& = & \langle \log P(x,y|\theta) \rangle_{q(x|\phi)} - \langle \log q(x|\phi) \rangle_{q(x|\phi)}
+L(y;\theta,\phi) & = & \log P(y|\theta) - D\left(q||P(x|y,\theta)\right) \\
+& = & \langle \log P(x,y|\theta) \rangle_q + S\left( q \right)
 \end{eqnarray*}
 
 By Gibbs' inequality ($D(p||q) \geq 0$), $L$ is a lower bound for the log-likelihood, $\log P(y|\theta)$.
+The variational lower bound is the highest that we can get this lower bound
 
-The variational lower bound is
 \[
 L^\ast(y;\theta) = \max_{\phi} L(y;\theta,\phi) = L(y;\theta,\phi^\ast)
 \]
-which is as close as we can get this lower bound to the true log-likelihood.
 
-Often, $\phi^\ast \equiv \phi^\ast(y,\theta)$ is found by iterative solution.
-
-\end{frame}
-
-
-\begin{frame}{Maximizing the lower bound}
-
-\begin{eqnarray*}
-L(y;\theta,\phi) & = & \langle \log P(x,y|\theta) \rangle_{q(x|\phi)} - \langle \log q(x|\phi) \rangle_{q(x|\phi)} \\
-& \equiv & L'(y;\theta,\phi,\phi) \\
-L'(y;\theta,\phi_0,\phi_1) & = & \langle \log P(x,y|\theta) \rangle_{q(x|\phi_0)} - \langle \log q(x|\phi_1) \rangle_{q(x|\phi_0)}
-\end{eqnarray*}
-
-This relaxed form may offer an iterative-style solution for $\phi^\ast$,
-e.g. hoping for a convergence of this recursion:
-\begin{eqnarray*}
-\phi^\ast & = & \lim_{n \to \infty} \phi_n \\
-\phi_1 & = & \mbox{some initial guess} \\
-\phi_{n+1} & = & \argmax_{\phi} \left[ L'(y;\theta,\phi_n,\phi) + \mbox{Lagrange constraints} \right]
-\end{eqnarray*}
+Doing this effectively seems to require
+ a $q(x|\phi)$ that is a sufficiently flexible fit to $P(x|y,\theta)$,
+ a closed form for $L$,
+ and an approach to solving $\frac{\partial{L}}{\partial{\phi}} = 0$.
 
 \end{frame}
 
