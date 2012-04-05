@@ -107,7 +107,22 @@
  \item More generally, we're interested in parsers that compute scores (energies, probabilities) for a given input string
  \item These scores are associated with the transformation rules. The grammar is said to be score-{\em attributed} (Knuth)
  \iteme
+\iteme
+\end{frame}
+\begin{frame}{}
+\itemb
 \item The Chomsky hierarchy of grammars and their associated parsers
+ \itemb
+ \item Regular grammars: finite-state machines (HMMs)
+ \item Context-free grammars: pushdown automata (SCFGs)
+ \item Context-sensitive grammars: finite-tape Turing machines (linear-bounded automata)
+ \item Unrestricted grammars: infinite-tape Turing machines
+ \iteme
+\iteme
+\end{frame}
+\begin{frame}{}
+\itemb
+\item The Chomsky hierarchy of grammars and their associated parsers (lower levels)
  \itemb
  \item Regular grammars: finite-state machines (HMMs)
  \item Context-free grammars: pushdown automata (SCFGs)
@@ -120,24 +135,38 @@ Panini's ``Ashtadhyayi'': a CFG for Sanskrit (3959 rules (sutras), circa.300-700
 Bishop Robert Lowth's ``A Short Introduction to English Grammar'' (1762).
 Chomsky's theory of universal generative grammars (1956 and onwards).
   \iteme
+ \iteme
+\iteme
+\end{frame}
+\begin{frame}{}
+\itemb
+\item The Chomsky hierarchy of grammars and their associated parsers (upper levels)
+ \itemb
  \item Context-sensitive grammars: Turing machines with bounded tape = linear-bounded automata
   \itemb
   \item Big category: low-complexity sequence repeats, tandem repeats, other bounded correlations e.g. pseudoknots
   \item Lempel-Ziv compression algorithm (allowing local stutter) can be viewed as one of these
   \item Limited context sensitivity (e.g. basepair stacking) can be effected using a {\em lexicalised} SCFG
+  \item Tree-Adjoining Grammars, Linear-Indexed Grammars, etc.
   \iteme
  \item Unrestricted grammars: complete Turing machines
  \iteme
+\iteme
+\end{frame}
+\begin{frame}{}
+\itemb
 \item Summary of Chomsky hierarchy (NB regular $\subset$ context-free $\subset$ context-sensitive $\subset$ unrestricted)
 \\
+\small
 \begin{tabular}{lllllllll}
 Class & Example rule & Automaton & Complexity & Related models & Max-product & \multicolumn{2}{l}{Sum-product} & EM \\
 \hline
-Regular & $S \to x S$ & Finite-state & $O(L)$ & HMM, GHMM & Viterbi & Forward & Backward & Baum-Welch \\
-Context-free & $S \to T U$ & Pushdown & $O(L^3)$ & SCFG & CYK & Inside & Outside & (Inside-Outside) \\
-Context-sensitive & $S T \to T S$ & Linear-bounded & $O(|\Phi|^L)$ & TAG, RNRG & - & - & - & - \\
-Unrestricted & $S T \to U$ & Turing machine & Undecidable & - & - & - & - & -
+Regular & $S \to x\ S$ & Finite-state & $O(L)$ & HMM, GHMM & Viterbi & Forward & Backward & Baum-Welch \\
+Context-free & $S \to T\ U$ & Pushdown & $O(L^3)$ & SCFG & CYK & Inside & Outside & (Inside-Outside) \\
+Context-sensitive & $S\ T \to T S$ & Linear-bounded & $O(|\Phi|^L)$ & TAG, RNRG & - & - & - & - \\
+Unrestricted & $S\ T \to U$ & Turing machine & Undecidable & - & - & - & - & -
 \end{tabular}
+\normalsize
 Here $S,T,U$ are nonterminals and $x$ is a terminal.
 ``Complexity'' refers to the time complexity of parsing a sequence of length $L$.
 \iteme
@@ -165,11 +194,16 @@ Here $S,T,U$ are nonterminals and $x$ is a terminal.
 
 Terms contributing to the free energy of a folded RNA structure ({\tt scor.berkeley.edu})
  \itemb
- \item Hydrogen bonding between bases. Canonical and noncanonical pairs.
+ \item Hydrogen bonding between bases. Canonical, noncanonical pairs
  \item Stacking energies due to overlap of $\pi$-orbitals of adjacent planar basepairs
   \inone{H-bonding and stacking terms can be combined and measured by direct experiment.}
  \item Unusual configurations: tetraloops, triloops, triple-A platforms
   \inone{Finite number of cases, so also amenable to experimental measurement.}
+\iteme
+\end{frame}
+
+\begin{frame}{}
+ \itemb
  \item Entropic cost of closing loops
   \itemb
   \item Theory: rods and Gaussian springs. Integrate out displacements, get likelihood ratio (Doi-Edwards, Isambert)
@@ -193,10 +227,16 @@ a {\bf ``basepair stacking + convex loop penalty''} picture of the free energy s
  \item Let $H(x,x')=1$ if $xx'$ is a canonical Watson-Crick basepair, and $0$ otherwise
  \item Nussinov recursion finds the structure for $x_i \ldots x_j$ that has the most strictly nested canonical basepairs
 \[
-S(i,j) = \max \left( S(i+1,j), S(i,j-1), S(i+1,j-1) + H(x_i,x_j), \max_{i \leq k \leq j} (S(i,k) + S(k,j)) \right)
+S(i,j) = \max \left( \begin{array}{c} S(i+1,j), \\ S(i,j-1), \\ S(i+1,j-1) + H(x_i,x_j), \\ \max_{i \leq k \leq j} (S(i,k) + S(k,j)) \end{array} \right)
 \]
 Best structure for $X$ is found by traceback from $S(1,L)$
- \item Equivalent to the following {\bf score-attributed grammar}
+ \iteme
+\iteme
+\end{frame}
+
+\begin{frame}{}
+Nussinov algorithm = parser for {\bf score-attributed grammar}
+
 \begin{tabular}{rll|l}
 \multicolumn{3}{c|}{Rule} & Score \\
 \hline
@@ -206,19 +246,28 @@ $S$ & $\to$ & $S\ x$     & 0 \\
     &   $|$ & $S\ S$     & 0 \\
     &   $|$ & $\epsilon$ & 0
 \end{tabular}
- \item If we allow $H(x,x')$ to be the free energy of basepair formation for $xx'$
+
+If we allow $H(x,x')$ to be the free energy of basepair formation for $xx'$
 (and assume a zero energy cost for any structural feature except basepairs),
 then this becomes an {\bf energy-attributed grammar}.
 Same recursion for $S$ now calculates ``ground state'' energy
 for a very simple energy model ignoring all but hydrogen bonding terms for strictly nested basepairs.
+\end{frame}
+
+\begin{frame}{}
 The partition function for this highly simplified model is
-\[
-Z(i,j) = Z(i+1,j) + Z(i,j-1) + Z(i+1,j-1) \exp (-\beta H(x_i,x_j)) + \sum_{i \leq k \leq j} Z(i,k) Z(k,j)
-\]
+\begin{eqnarray*}
+Z(i,j) & = & Z(i+1,j) + Z(i,j-1) + Z(i+1,j-1) \exp (-\beta H(x_i,x_j)) \\
+& & + \sum_{i \leq k \leq j} Z(i,k) Z(k,j)
+\end{eqnarray*}
 where $\beta = 1/kT$ is an ``inverse temperature''.
 NB: have simply changed $H \to \exp(-\beta H)$, $+ \to \times$ and $\max \to +$ in equation for $S$
- \item We can also have {\bf probability-attributed grammars} or {\bf stochastic grammars}
- \item Relationship between scoring schemes:
+\end{frame}
+
+\begin{frame}{}
+We can also have {\bf probability-attributed grammars} or {\bf stochastic grammars}.
+Relationship between scoring schemes:
+\\
 \begin{tabular}{l|r}
 Score & Form \\
 \hline
@@ -231,12 +280,12 @@ Specifically the Boltzmann probability uses a scaling factor (inverse temperatur
 $P(x) = \frac{1}{Z} \exp[-\beta E(x)]$,
 where $Z = \sum_x \exp[-\beta E(x)]$.
 % \item Sankoff's $k$-loops
- \item Zuker's energy-attributed grammar.
-All basepairs $xy$ are represented by parse subtrees rooted in the ``lexicalized'' state $V_{xy}$.
-(``Lexicalized'' means there are $4 \times 4 = 16$ of these states, for the 16 possible basepairs.
-However, we don't have to store all 16 of these possibilities when doing DP on a given sequence $X$.
-Why? For any given inside subsequence $X_i \ldots X_j$, the only accessible states are $W$ and $V_{X_i X_j}$.)
+\end{frame}
+\begin{frame}{}
+Energy-attributed grammar (Zuker, MFOLD).
+Parse tree for subsequence $X_i \ldots X_j$ must be rooted at $W$ or $V_{X_i X_j}$.
 \\
+\tiny
 \begin{tabular}{rll|l}
 LHS & & RHS & Energy \\
 \hline
@@ -254,20 +303,24 @@ $V_{ab}$ & $\to$ & $z^n$                               & $h(n)$ \\
          &   $|$ & $x\ V_{xy}\ y\ W\ x'\ V_{x'y'}\ y'$ & $\alpha(x,y) + \alpha(x',y')$ \\
          &   $|$ & $\epsilon$                          & 0
 \end{tabular}
+\normalsize
 \\
 Here $x,y,x',y',z_i$ are terminals (nucleotides), and $z^n$ is shorthand for an $n$-nucleotide emission $z_1 \ldots z_n$.
-\\
+\end{frame}
+\begin{frame}{}
 The scoring scheme is as follows:
 \\
+\small
 \begin{tabular}{rl}
 Free energy term & Meaning \\
 \hline
-$\alpha(x,y)$ & Energy of basepair $xy$ (at the beginning of a stem, i.e. stacked on nothing) \\
+$\alpha(x,y)$ & Energy of basepair $xy$ (end of stem, no stacking) \\
 $\alpha_S(x,y|a,b)$ & Energy of basepair $xy$ stacked on top of basepair $ab$ \\
 $h(n)$ & Hairpin loop enclosing $n$ bases \\
 $b(n)$ & Asymmetric bulge of $n$ bases \\
 $i(n)$ & Interior loop (symmetric bulge) with total of $n$ bases
 \end{tabular}
+\normalsize
 \\
 This scoring scheme was historically formulated in terms of Sankoff's ``$k$-loop decomposition''.
 \\
@@ -276,8 +329,6 @@ NB Zuker's algorithm (grammar), like Nussinov's, excludes pseudoknots.
 Strictly, Zuker described the algorithm that finds the lowest-energy parse using the above grammar (CYK).
 McCaskill described the algorithm for calculating the partition function (Inside)
 and thus the posterior probabilities of individual basepairs (Outside).
- \iteme
-\iteme
 
 \end{frame}
 
@@ -296,56 +347,79 @@ $A$ & $\to$ & $B\ C$      & Bifurcation \\
     &   $|$ & $\epsilon$  & Termination
 \end{tabular} \\
 Probabilities denoted by $P(\mbox{rule})$, e.g. $P(A \to BC)$
+\iteme
+\end{frame}
+\begin{frame}{}
+\itemb
 \item Inside algorithm. \\
 Let $I_A(i,k) = P(x_i \ldots x_{i+k} | A)$ be sum of probabilities for parse trees rooted in $A$ generating sequence $x_i \ldots x_{i+k}$.
-\[
-I_A(i,k) = \left( \sum_B \sum_C \sum_{j=0}^k P(A \to BC) I_B(i,j) I_C(i+j,k-j) \right)
+\begin{eqnarray*}
+I_A(i,k) & = & \left( \sum_B \sum_C \sum_{j=0}^k P(A \to BC) I_B(i,j) I_C(i+j,k-j) \right)
+\\ & &
 + \left\{ \begin{array}{ll}
 0 & \mbox{if $k>1$} \\
 P(A \to x_i) & \mbox{if $k=1$} \\
 P(A \to \epsilon) & \mbox{if $k=0$}
 \end{array} \right\}
-\]
+\end{eqnarray*}
 NB loopy dependencies, e.g. if $P(A \to AA) \neq 0$ and $P(A \to \epsilon) \neq 0$.
 It's common to try to avoid these when designing the grammar.
+\iteme
+\end{frame}
+\begin{frame}{}
+\itemb
 \item Cocke-Younger-Kasami (CYK) algorithm. \\
 Let $Y_A(i,k)$ be probability of ML parse tree rooted in $A$ generating sequence $x_i \ldots x_{i+k}$.
-\[
-Y_A(i,k) = \max \left( \max_B \max_C \max_{j=0}^k P(A \to BC) Y_B(i,j) Y_C(i+j,k-j),
+\begin{eqnarray*}
+\lefteqn{Y_A(i,k) = \max} & & \\
+& & \left( \begin{array}{c} \max_B \max_C \max_{j=0}^k P(A \to BC) Y_B(i,j) Y_C(i+j,k-j), \\
 \left\{ \begin{array}{ll}
 0 & \mbox{if $k>1$} \\
 P(A \to x_i) & \mbox{if $k=1$} \\
 P(A \to \epsilon) & \mbox{if $k=0$}
 \end{array} \right\}
-\right)
-\]
+\end{array} \right)
+\end{eqnarray*}
 NB similar to Nussinov.
+\iteme
+\end{frame}
+\begin{frame}{}
+\itemb
 \item Outside algorithm. \\
 Let $O_A(i,k) = P(x_1 \ldots x_{i-1},A,x_{i+k+1} \ldots x_L|S)$
 be sum of probabilities for incomplete parse trees rooted in $S$, ending in $A$ and generating outside sequence $x_1 \ldots x_{i-1}$ and $x_{i+k+1} \ldots x_L$.
-\[
-O_A(i,k) = \sum_B \sum_C \left(
-\sum_{j=0}^i O_C(i-j,j+k) P(C \to BA) I_B(i-j,j) +
+\begin{eqnarray*}
+O_A(i,k) & = & \sum_B \sum_C \left(
+\sum_{j=0}^i O_C(i-j,j+k) P(C \to BA) I_B(i-j,j) \right. \\ & & \left. +
 \sum_{j=0}^{L-i-k} O_C(i,j+k) P(C \to AB) I_B(i+k,j)
 \right)
-\]
+\end{eqnarray*}
 with boundary condition $O_A(0,L) = \delta(A=S)$.
+\iteme
+\end{frame}
+\begin{frame}{}
+\itemb
 \item Inside-Outside and posterior probabilities. \\
 Posterior probability that parse tree contains a subtree with inside sequence $x_i \ldots x_{i+k}$ rooted in state $A$:
 \[
 P(A_{i,i+k}|X) = \frac{O_A(i,k) I_A(i,k)}{I_S(0,L)}
 \]
 Posterior probability of bifurcation $A_{i,j+k} \to B_{i,j} C_{i+j,k}$:
+\small
 \[
 P(A_{i,j+k} \to B_{i,j} C_{i+j,k}|X) = \frac{O_A(i,j+k) P(A \to BC) I_B(i,j) I_C(i+j,k)}{I_S(0,L)}
 \]
+\normalsize
 etc.
- \inone{Parameter estimation: we can write the parse tree likelihood as $\prod_i \theta_i^{n_i}$,
+\iteme
+\end{frame}
+\begin{frame}{}
+\itemb
+\item Parameter estimation: we can write the parse tree likelihood as $\prod_i \theta_i^{n_i}$,
 where $\theta_i$ is the probability of rule $i$ and $n_i$ is the number of times it was applied.
 As with HMMs, the EM algorithm for SCFGs thus involves computing posterior expectations $\expect{n_i}$ for these counts,
 and setting $\theta_i \propto \expect{n_i}$.
 The posterior expectations are computed using the Inside-Outside algorithm, as shown for rules of the form $P(A \to BC)$.
-}
 \item There is a KYC-like analogue to Outside, that can be used to find ML parse tree including a particular subsequence.
 \item Implementation issues: time complexity is $O(|\Phi|^3 L^3)$, memory is $O(|\Phi| L^2)$.
  \inone{Cubic factors in time complexity arise due to bifurcations, so minimize number of bifurcations for max efficiency (c.f. RNA normal form).}
@@ -363,6 +437,10 @@ The posterior expectations are computed using the Inside-Outside algorithm, as s
  \item As with Evolutionary HMMs, we can let the terminals be alignment columns
  \item Again, terminal emission likelihood $P(A \to a)$ is implemented as Felsenstein pruning
  \iteme
+\iteme
+\end{frame}
+\begin{frame}{}
+\itemb
 \item Pair SCFGs: Evoldoer. Version of TKF that describes evolution of RNA secondary structure (Holmes 2005).
  \itemb
  \item Two kinds of TKF91 links model, recursively nested in a tree
