@@ -521,12 +521,351 @@ in fact, for this model [TKF91], can collapse DP right down to one variable; see
 \normalsize
 \end{frame}
 
+% Transducer defs
+\newcommand\nullmodel{{\cal N}}
+\newcommand\substitute{{\cal S}}
+\newcommand\tkf{{\cal B}}
+\newcommand\tkfroot{{\cal R}}
+\newcommand\profile{{\cal P}}
+\newcommand\formaldefs{{\bf Formal definitions: }}
+\newcommand\charat[2]{\mbox{symbol}(#1,#2)}
+\newcommand\gappedalphabet[1]{(\Omega_{#1} \cup \{\epsilon\})}
+\newcommand\gapsquared{\gappedalphabet{}^2}
+\newcommand\gappedpair[2]{\gappedalphabet{#1} \times \gappedalphabet{#2}}
+\newcommand\wtrans[4]{#1(#2 : [#3] : #4)}
+\newcommand\transequiv{\equiv}
+\newcommand\compose{}
+\newcommand\identity{{\cal I}}
+\newcommand\fork{\circ}
+\newcommand\idfork{\Upsilon}
+\newcommand\forkn[1]{\idfork(#1)}
+\newcommand\forkfun[2]{\forkn{#1, #2}}
+\newcommand\generate{\Delta}
+\newcommand\recognize{\nabla}
+\newcommand\States{\Phi}
+\newcommand\statesof[1]{\States_{#1}}
+\newcommand\Transitions{\tau}
+\newcommand\transitionsof[1]{\Transitions_{#1}}
+\newcommand\startstate{\phi_S}
+\newcommand\laststate{\phi_E}
+\newcommand\startstateof[1]{\phi_{S;#1}}
+\newcommand\laststateof[1]{\phi_{E;#1}}
+\newcommand\weight{{\cal W}}
+\newcommand\transweightfun{\weight_{\mbox{\tiny trans}}}
+\newcommand\emitweightfun{\weight_{\mbox{\tiny emit}}}
+\newcommand\sumoverpaths[1]{\transweightfun(\{\pi_{#1}\})}
+\newcommand\statesoftype[1]{\States_{#1}}
+\newcommand\statetype{\mbox{\tiny type}}
+\newcommand\dup[1]{\left( \begin{array}{l} #1 \\ #1 \end{array} \right)}
+\newcommand\seqlen[1]{\mbox{len}(#1)}
+
+\begin{frame}{}
+
+{\em The letter transducer} is a tuple $T = (\Omega_I, \Omega_O, \States, \startstate, \laststate, \Transitions, \weight)$
+where
+\itemb
+\item $\Omega_I$ is an input alphabet,
+\item $\Omega_O$ is an output alphabet,
+\item $\States$ is a set of states,
+\item $\startstate \in \States$ is the start state,
+\item $\laststate \in \States$ is the end state,
+\item $\Transitions \subseteq \States \times \gappedalphabet{I} \times \gappedalphabet{O} \times \States$ is the transition relation,
+\item $\weight:\Transitions \to [0,\infty)$ is the transition weight function.
+\iteme
+\end{frame}
+
+\begin{frame}{}
+
+{\em Transition paths:}
+The transitions in $\Transitions$ correspond to the edges of a labeled multidigraph over states in $\States$.
+Let $\Pi \subset \Transitions^\ast$ be the set of all labeled transition paths from $\startstate$ to $\laststate$.
+
+{\em Transduction weight:}
+For a transition path $\pi$ from $\startstate$ to $\laststate$,
+define the path weight $\weight(\pi)$ and
+(for sequences $x \in \Omega_I^\ast, y \in \Omega_O^\ast$)
+the transduction weight $\wtrans{\weight}{x}{T}{y}$
+
+\begin{eqnarray*}
+\weight(\pi) & = & \prod_{\Transitions \in \pi} \weight(\Transitions) \\
+\wtrans{\weight}{x}{T}{y} & = & \sum_{\pi \in \Pi, S_I(\pi)=x, S_O(\pi)=y} \weight(\pi)
+\end{eqnarray*}
+where $S_I$ and $S_O$ denote the input and output labelings of a path.
+\end{frame}
+
+\begin{frame}{}
+
+{\em Equivalence:}
+If for transducers $T,T'$ it is true that $\wtrans{\weight}{x}{T}{y}=\wtrans{\weight'}{x}{T'}{y}\ \forall x,y$ then the transducers are equivalent in weight, $T \transequiv T'$.
+\end{frame}
+
+\begin{frame}{}
+
+{\em Types of state and transition:}
+If there exists a function,
+\itemb
+\item $\statetype:\States \to {\cal T}$
+\iteme
+mapping states to types in the set
+\[
+{\cal T} = \{S,M,D,I,N,W,E\}
+\]
+and, furthermore, we can find functions
+\itemb
+\item $\transweightfun: \States^2 \to [0,\infty)$
+\item $\emitweightfun: \gappedpair{I}{O} \times \States \to [0,\infty)$
+\iteme
+such that the labeled transition weights separate into transition and emission factors (see next slide),
+then the transducer is in {\em (weak) normal form}.
+
+If, additionally, there are no null states ($\statesoftype{N} = \emptyset$),
+then the transducer is in {\em strict normal form}.
+
+\end{frame}
+
+\begin{frame}
+
+\small
+\begin{eqnarray*}
+\States_U & = & \{ \phi: \phi\in\States, \statetype(\phi) \in U \subseteq {\cal T} \} \\
+\statesoftype{S} & = & \{ \startstate \} \\
+\statesoftype{E} & = & \{ \laststate \} \\
+\States & \equiv & \statesoftype{SMDINWE} \\   
+\Transitions_M & \subseteq & \statesoftype{W} \times \Omega_I \times \Omega_O \times \statesoftype{M} \\
+\Transitions_D & \subseteq & \statesoftype{W} \times \Omega_I \times \{\epsilon\} \times \statesoftype{D} \\
+\Transitions_I & \subseteq & \statesoftype{SMDIN} \times \{\epsilon\} \times \Omega_O \times \statesoftype{I} \\
+\Transitions_N & \subseteq & \statesoftype{SMDIN} \times \{\epsilon\} \times \{\epsilon\} \times \statesoftype{N} \\
+\Transitions_W & \subseteq & \statesoftype{SMDIN} \times \{\epsilon\} \times \{\epsilon\} \times \statesoftype{W} \\
+\Transitions_E & \subseteq & \statesoftype{W} \times \{\epsilon\} \times \{\epsilon\} \times \statesoftype{E} \\
+\Transitions & = & \Transitions_M \cup \Transitions_D \cup \Transitions_I \cup \Transitions_N \cup \Transitions_W \cup \Transitions_E \\
+\weight(\phi_{\mbox{src}},\omega_{\mbox{in}},\omega_{\mbox{out}},\phi_{\mbox{dest}}) & \equiv & \transweightfun(\phi_{\mbox{src}},\phi_{\mbox{dest}}) \emitweightfun(\omega_{\mbox{in}},\omega_{\mbox{out}},\phi_{\mbox{dest}})
+\end{eqnarray*}
+\normalsize
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Interpretation:}
+A normal-form transducer can be thought of as associating inputs and outputs with states, rather than transitions.
+(Thus, it is like a Moore machine.)
+The state types are
+ start ($S$) and end ($E$);
+ wait ($W$), in which the transducer waits for input;
+ match ($M$) and delete ($D$), which process input symbols;
+ insert ($I$), which writes additional output symbols; and
+ null ($N$), which has no associated input or output.
+All transitions also fall into one of these types, via the destination states;
+thus, $\Transitions_M$ is the set of transitions ending in a match state, etc.
+The transition weight ($\weight$) factors into a term that is independent of the input/output label ($\transweightfun$)
+and a term that is independent of the source state ($\emitweightfun$).
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Universality:}
+For any weak-normal form transducer $T$ there exists an equivalent in strict-normal form which can be found by applying the state-marginalization algorithm to eliminate null states.
+For any transducer, there is an equivalent letter transducer in weak normal form, and therefore, in strict normal form.
+\end{frame}
+
+\begin{frame}{}
+
+{\em Mealy machines} are transducers with I/O occurring on transitions, as with our general definition of the letter transducer.
+
+{\em Moore machines} are transducers whose I/O is associated with states, as with our normal form.
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Transducer composition:}
+Given letter transducers
+ $T = (\Omega_X, \Omega_Y, \States, \startstate, \laststate, \Transitions, \weight)$ and
+ $U = (\Omega_Y, \Omega_Z, \States', \startstate', \laststate', \Transitions', \weight')$,
+there exists a letter transducer $T\compose U = (\Omega_X, \Omega_Z, \States'' \ldots \weight'')$ 
+such that $\forall x \in \Omega_X^\ast, z \in \Omega_Z^\ast$:
+\[
+\wtrans{\weight''}{x}{T\compose U}{z} = \sum_{y\in\Omega_Y^\ast} \wtrans{\weight}{x}{T}{y} \wtrans{\weight'}{y}{U}{z}
+\]
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Example construction of $TU$:}
+Assume without loss of generality that $T$ and $U$ are in strict normal form.
+Then $\States'' \subset \States \times \States'$,
+$\startstate''=(\startstate,\startstate')$, $\laststate''=(\laststate,\laststate')$
+and
+\small
+\begin{eqnarray*}
+\lefteqn{\weight''((t,u),\omega_x,\omega_z,(t',u')) =} & & \\
+& & \left\{ \begin{array}{ll}
+\delta(t=t') \delta(\omega_x=\epsilon) \weight'(u,\epsilon,\omega_z,u') & \mbox{\small if $\statetype(u) \neq W$} \\
+\weight(t,\omega_x,\epsilon,t') \delta(\omega_z=\epsilon) \delta(u=u') & \mbox{if $\statetype(u) = W,\statetype(t') \notin \{M,I\}$} \\
+\displaystyle
+\sum_{\omega_y \in \Omega_Y} \weight(t,\omega_x,\omega_y,t') \weight'(u,\omega_y,\omega_z,u') & \mbox{if $\statetype(u) = W,\statetype(t') \in \{M,I\}$} \\
+0 & \mbox{otherwise}
+\end{array} \right.
+\end{eqnarray*}
+\normalsize
+The resulting transducer is in weak-normal form (it can be converted to a strict-normal form transducer by eliminating null states).
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Transducer intersection:}
+Given letter transducers
+ $T = (\Omega_X, \Omega_T, \States, \startstate, \laststate, \Transitions, \weight)$ and
+ $U = (\Omega_X, \Omega_U, \States', \startstate', \laststate', \Transitions', \weight')$,
+there exists a letter transducer $T\fork U = (\Omega_X, \Omega_V, \States'' \ldots \weight'')$
+where $\Omega_V \subseteq \gappedpair{T}{U}$
+such that $\forall x \in \Omega_X^\ast, t \in \Omega_T^\ast, u \in \Omega_U^\ast$:
+\[
+\wtrans{\weight}{x}{T}{t} \wtrans{\weight'}{x}{U}{u} = \wtrans{\weight''}{x}{T\fork U}{(t,u)}
+\]
+where the term on the right is defined as follows
+\[
+\wtrans{\weight''}{x}{T\fork U}{(t,u)} = \sum_{v \in \Omega_V^\ast, S_1(v)=t, S_2(v)=u } \wtrans{\weight''}{x}{T\fork U}{v}
+\]
+Here $\Omega_V$ is the set of all possible pairwise alignment columns,
+$v \in \Omega_V^\ast$ is a pairwise alignment and
+$S_1(v)$ and $S_2(v)$ are the sequences in (respectively) the first and second rows of $v$.
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Example construction of $T \fork U$:}
+Assume without loss of generality that $T$ and $U$ are in strict normal form.
+Then $\States'' \subset \States \times \States'$,
+$\startstate''=(\startstate,\startstate')$, $\laststate''=(\laststate,\laststate')$
+and
+\small
+\begin{eqnarray*}
+\lefteqn{\weight''((t,u),\omega_x,(\omega_y,\omega_z),(t',u')) =} & & \\
+ & & \left\{ \begin{array}{ll}
+\delta(t=t') \delta(\omega_x=\omega_y=\epsilon) \weight'(u,\epsilon,\omega_z,u') & \mbox{if $\statetype(u) \neq W$} \\
+\weight(t,\epsilon,\omega_x,t') \delta(\omega_x=\omega_z=\epsilon) \delta(u=u') & \mbox{if $\statetype(u) = W,\statetype(t) \neq W$} \\
+\weight(t,\omega_x,\omega_y,t') \weight'(u,\omega_x,\omega_z,u') & \mbox{if $\statetype(t) = \statetype(u) = W$} \\
+0 & \mbox{otherwise}
+\end{array} \right.
+\end{eqnarray*}
+\normalsize
+The resulting transducer is in weak-normal form (it can be converted to a strict-normal form transducer by eliminating null states).
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Identity:}
+There exists a transducer $\identity=(\Omega,\Omega\ldots)$ that copies its input identically to its output.
+An example construction (not in normal form) is
+\begin{eqnarray*}
+\identity & = & (\Omega,\Omega,\{\phi\},\phi,\phi,\transitionsof{\identity},1) \\
+\transitionsof{\identity} & = & \left\{(\phi,\omega,\omega,\phi):\omega\in\Omega\right\}
+\end{eqnarray*}
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Bifurcation:}
+There exists a transducer $\idfork=(\Omega,\Omega^2\ldots)$ that duplicates its input in parallel.
+That is, for input $x_1 x_2 x_3 \ldots$ it gives output $\dup{x_1}\dup{x_2}\dup{x_3}\ldots$.
+An example construction (not in normal form) is
+\begin{eqnarray*}
+\idfork & = & (\Omega,\Omega^2,\{\phi\},\phi,\phi,\transitionsof{\idfork},1) \\
+\transitionsof{\idfork} & = & \left\{\left(\phi,\omega,\dup{\omega},\phi\right):\omega\in\Omega\right\}
+\end{eqnarray*}
+It can be seen that $\idfork \transequiv \identity \fork \identity$.
+
+An intersection $T \fork U$ may be considered a parallel composition of $\idfork$ with $T$ and $U$.
+We write this as  $\forkfun{T}{U}$ or, diagrammatically,
+\begin{parsetree}
+ ( .. ( .$\idfork$. ( .$T$. ~ ) ( .$U$. ~ ) ) )
+\end{parsetree}
+
+We use the notation $\forkfun{T}{U}$ in several places, when it is convenient to have a placeholder transducer $\idfork$ at a bifurcating node in a tree.
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Recognition profiles:}
+A transducer $T$ is a {\em recognizer} if it has a null output alphabet, and so generates no output except the empty string.
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Exact-match recognizer:}
+For $S \in \Omega^\ast$, there exists a transducer $\recognize(S) = (\Omega,\emptyset\ldots \weight)$
+that accepts the specific sequence $S$ with weight one, but rejects all other input sequences
+\[
+\wtrans{\weight}{x}{\recognize(S)}{\epsilon} = \delta(x=S)
+\]
+Note that $\recognize(S)$ has a null output alphabet, so its only possible output is the empty string, and it is a recognizer.
+
+In general, if $T=(\Omega_X,\Omega_Y \ldots \weight')$ is any transducer then $\forall x \in \Omega_X^\ast, y \in \Omega_Y^\ast$
+\[
+\wtrans{\weight'}{x}{T}{y} \equiv \wtrans{\weight}{x}{T \compose \recognize(y)}{\epsilon}
+\]
+
+\end{frame}
+
+\begin{frame}{}
+
+An example construction (not in normal form) is
+\begin{eqnarray*}
+\recognize(S) & = & (\Omega,\emptyset,\mathbb{Z}_{\seqlen{S}+1},0,\seqlen{S},\transitionsof{\recognize},1) \\
+\transitionsof{\recognize} & = & \left\{\left(n,\charat{S}{n+1},\epsilon,n+1\right):n \in \mathbb{Z}_{\seqlen{S}}\right)\}
+\end{eqnarray*}
+where $\mathbb{Z}_N$ is the set of integers modulo $N$,
+ and $\charat{S}{k}$ is the $k$'th position of $S$ (for $1 \leq k \leq \seqlen{S}$).
+Note that this construction has $\seqlen{S}+1$ states.
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Generative transducers:}
+A transducer $T$ is generative (or ``a {\em generator}'') if it has a null input alphabet, and so rejects any input except the empty string.
+Then $T$ may be regarded as a state machine that generates an output, equivalent to a Hidden Markov Model.
+Define the probability (weight) distribution over the output sequence
+\[
+P(x|T) \equiv \wtrans{\weight}{\epsilon}{T}{x}
+\]
+
+\end{frame}
+
+\begin{frame}{}
+
+{\em Chapman-Kolmogorov equation:}
+
+If $T_t$ is a transducer parameterized by a continuous time parameter $t$,
+modeling the evolution of a sequence for time $t$ under a continuous-time Markov process,
+then the Chapman-Kolmogorov equation can be expressed as a transducer equivalence
+\[
+T_t \compose T_u \transequiv T_{t+u}
+\]
+
+The TKF91 transducers, for example, have this property.
+Furthermore, for TKF91, $T_{t+u}$ has the same number of states and transitions as $T_t$,
+so this is a kind of self-similarity.
+
+\end{frame}
+
+
+
 \begin{frame}{}
 Felsenstein pruning recursion for transducers
 \[
 F_n = \left\{
 \begin{array}{ll}
-\left( M^{(l)} F_l \right) \circ \left( M^{(r)} F_r \right) & \mbox{if $n$ internal} \\
+\left( M^{(l)} F_l \right) \fork \left( M^{(r)} F_r \right) & \mbox{if $n$ internal} \\
 \nabla(y_n) & \mbox{if $n$ leaf}
 \end{array}
 \right.
@@ -548,12 +887,14 @@ where
 \begin{frame}{}
 
 \itemb
-\item Evolutionary HMMs
+\item Phylogenetic transducers/HMMs
  \inone{Exhaustive DP (c.f. Hein 2001)}
-\item MCMC and evolutionary HMMs
+\item MCMC
  \itemb
  \item Branch sampling; node sampling; aunt displacement; (parent sampling); sequence sampling
  \item Chaining programs together via MCMC; {\tt tkfalign} and propose/accept/reject
+ \item Redelings-Suchard kernel
+ \item Bouchard-C\^{o}t\'{e}, Jordan, Klein kernel
  \iteme
 \iteme
 
@@ -578,7 +919,7 @@ $P(x_k(0),x_k(t)|x_1(0) \ldots x_{k-1}(0),x_1(t) \ldots x_{k-1}(t))$
   \iteme
  \item Lunter-Hein approach: model full $\Omega^L$ process.
 Rate matrix is sum of $k$-mer terms, some of which commute, some don't.
-Taylor series for matrix exponential can be factorised and solved by DP.
+Taylor series for matrix exponential can be factorised and leading terms computed by DP.
  \item Short-range context-dependence: relevant for protein?
 Probably not for substitution (eg recent Brenner {\em et al} study)
 but maybe for indels (which might look like local duplications)
