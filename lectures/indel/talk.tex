@@ -473,6 +473,34 @@ From/To & {\tt S} & {\tt I} & {\tt E} \\
 \end{frame}
 
 \begin{frame}{}
+
+Now consider two TKF91 transducers in series:
+
+\vspace{\baselineskip}
+
+\centerline{Ancestor
+ $\stackrel{T(t)}{\longrightarrow}$ Intermediate
+ $\stackrel{T(t)}{\longrightarrow}$ Descendant}
+
+\vspace{\baselineskip}
+
+Can we marginalize the intermediate sequence, and write this as a single transducer?
+
+\vspace{\baselineskip}
+
+\centerline{Ancestor
+ $\stackrel{T(t)^2}{\longrightarrow}$ Descendant}
+
+\vspace{\baselineskip}
+For TKF91, we know the transducer models the finite-time
+transition probabilities of a stochastic process,
+so $T(t)^2 = T(2t)$.
+However we can also think of the state space of the two coupled TKF91 machines
+as a single ensemble transducer.
+
+\end{frame}
+
+\begin{frame}{}
 Transition matrix
 \begin{tabular}{r|ccccccccc}
 From/To & {\tt SS} & {\tt SI} & {\tt SW} & {\tt IM} & {\tt ID} & {\tt II} & {\tt IW} & {\tt EE} \\
@@ -525,8 +553,7 @@ in fact, for this model [TKF91], can collapse DP right down to one variable; see
 \newcommand\nullmodel{{\cal N}}
 \newcommand\substitute{{\cal S}}
 \newcommand\tkf{{\cal B}}
-\newcommand\tkfroot{{\cal R}}
-\newcommand\profile{{\cal P}}
+\newcommand\tkfroot{R}
 \newcommand\formaldefs{{\bf Formal definitions: }}
 \newcommand\charat[2]{\mbox{symbol}(#1,#2)}
 \newcommand\gappedalphabet[1]{(\Omega_{#1} \cup \{\epsilon\})}
@@ -558,6 +585,7 @@ in fact, for this model [TKF91], can collapse DP right down to one variable; see
 \newcommand\statetype{\mbox{\tiny type}}
 \newcommand\dup[1]{\left( \begin{array}{l} #1 \\ #1 \end{array} \right)}
 \newcommand\seqlen[1]{\mbox{len}(#1)}
+\newcommand\projection{{\cal P}}
 
 \begin{frame}{}
 
@@ -853,12 +881,33 @@ T_t \compose T_u \transequiv T_{t+u}
 \]
 
 The TKF91 transducers, for example, have this property.
-Furthermore, for TKF91, $T_{t+u}$ has the same number of states and transitions as $T_t$,
+Furthermore, for TKF91, $T_{t+u}$ has the same state and transition structure as $T_t$,
 so this is a kind of self-similarity.
 
 \end{frame}
 
+\begin{frame}{}
 
+We can write the instantaneous form of Chapman-Kolmogorov in transducer form,
+\[
+\frac{d}{dt} p_t = p_t Q
+\]
+where $p_t$ is the generator transducer for the sequence at time $t$
+and $Q$ is an instantaneous rate transducer, a generalized transducer
+whose weight is negative for on-diagonal elements (i.e. when the inputs and outputs are equal):
+\[
+Q = Q_{+} - (\identity \circ \projection(Q_{+}))
+\]
+where $Q_{+}$ is a positive (i.e. nonnegatively-weighted) transducer representing the rates
+and $\projection(Q_{+})$ is the projection of $Q_{+}$ to a recognizer
+(marginalizing the output tape).
+
+This further implies a transducer matrix exponential
+\[
+T_t = \exp(Qt)
+\]
+
+\end{frame}
 
 \begin{frame}{}
 Felsenstein pruning recursion for transducers
@@ -891,10 +940,10 @@ where
  \inone{Exhaustive DP (c.f. Hein 2001)}
 \item MCMC
  \itemb
- \item Branch sampling; node sampling; aunt displacement; (parent sampling); sequence sampling
- \item Chaining programs together via MCMC; {\tt tkfalign} and propose/accept/reject
- \item Redelings-Suchard kernel
- \item Bouchard-C\^{o}t\'{e}, Jordan, Klein kernel
+ \item Gibbs-sampling kernels for local tree neighborhoods
+ \item Chaining programs together via Metropolis-Hastings propose/accept/reject schemes
+ \item Redelings and Suchard's kernel
+ \item Bouchard-C\^{o}t\'{e}, Jordan, and Klein's kernel
  \iteme
 \iteme
 
