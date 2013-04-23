@@ -310,7 +310,7 @@ and found a series of orthogonal polynomials associated with transition probabil
 {\bf Linear birth-death process with birth rate $\lambda$, death rate $\mu$ and (constant) immigration rate $\lambda$}
 
  Introduce generating function $G(s,t) = \sum_{n=0}^\infty s^n r_n(t)$.
-The $r_n$ are recoverable as $r_n(t) = \left. \pderivn{G}{s}{n} \right|_{s=0}$
+The $r_n$ are recoverable as $r_n(t) = \frac{1}{n!} \left. \pderivn{G}{s}{n} \right|_{s=0}$
 
  Let $D = \pderivop{s}$ and use the following operator table: % to build a p.d.e.:
 \begin{tabular}{|rcr|l|}
@@ -522,7 +522,7 @@ From/To & {\tt SS} & {\tt SI} & {\tt SW} & {\tt IM} & {\tt ID} & {\tt II} & {\tt
  then update any {\tt WAIT}-ing transducers that receive a symbol on their input,
  repeating this last step recursively until no more transducers have input symbols to process.''}
 
-All transitions update one transducer only, except those from \{{\tt SW,IW}\} to \{{\tt IM,ID,EE}
+All transitions update one transducer only, except those from \{{\tt SW,IW}\} to \{{\tt IM,ID,EE}\}
 
 Note redundancy: can eliminate {\tt SW} and {\tt IW}, collapse {\tt SI} and {\tt II} together...
 in fact, for this model [TKF91], can collapse DP right down to one variable; see e.g. \Miklos, Song {\em et al}.
