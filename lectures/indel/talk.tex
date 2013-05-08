@@ -118,11 +118,21 @@
 \begin{frame}{}
 
 \itemb
-\item Motivation: how to handle gaps? Gaps as a fifth nucleotide in standard point substitution model: advantages (simplicity), drawbacks (irreversibility, ``ghost'' bases)
-\item Whole-sequence models: state space $\Omega^\ast$. Rate grammar notation: write mutation rules
+\item Motivating question: how to handle gaps?
+\item Gaps as a fifth nucleotide in standard point substitution model: advantages (simplicity), drawbacks (irreversibility, ``ghost'' bases)
+\iteme
+
+\end{frame}
+
+\begin{frame}{}
+
+\itemb
+\item Continuous-time Markov chains where the state space is the set of sequences $\Omega^\ast$
+\item String-rewriting system (semi-Thue system) + rates = {\em rate grammar}
  \itemb
  \item Point substitution with rate matrix ${\bf Q}$: rule is $AxB\ \to\ AyB:\ Q_{xy}$ where $A,B \in \Omega^\ast$ and $x,y \in \Omega$
- \item Insertion: rule can be written $AC\ \to\ ABC$, etc.
+ \item Insertion: $AC\ \to\ ABC:\lambda(B)$
+ \item Deletion: $ADC\ \to\ AC:\mu(D)$
  \iteme
 \item How to calculate conditional probabilities (matrix exponential) or multiple alignment likelihoods?
 \inone{Infinite-dimensional (albeit sparse) rate matrix; total mutation rate scales with sequence length.}
