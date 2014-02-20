@@ -109,6 +109,32 @@ but to get a normalized form for $P(\theta|x)$, we need to integrate out $\theta
 
 \end{frame}
 
+\begin{frame}{Motivation}
+
+\begin{eqnarray*}
+L(\theta) = & P(\mbox{data}\ D|\mbox{params}\ \theta) & = \mbox{likelihood} \\
+F(\theta,\alpha) = & P(\theta|\mbox{hyperparams}\ \alpha) & = \mbox{prior} \\
+G(\theta) = & P(\theta|\alpha, D) & = \mbox{posterior} \\
+\end{eqnarray*}
+
+$L$ and $F$ are conjugate if $G(\theta) = F(\theta,\alpha')$ where $\alpha' \equiv \alpha'(\alpha,D)$
+
+\end{frame}
+
+\begin{frame}{Common conjugacies}
+
+\begin{tabular}{lr}
+Likelihood & Prior \\
+\hline
+Exponential & Gamma \\
+Binomial & Beta \\
+Multinomial & Dirichlet \\
+Gaussian (fixed precision) & Gaussian \\
+Gaussian (varying precision) & Gaussian + Gamma \\
+\end{tabular}
+
+\end{frame}
+
 \subsection{Gamma distribution}
 
 \begin{frame}{Gamma distribution}
