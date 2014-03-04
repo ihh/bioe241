@@ -622,7 +622,9 @@ P(x'_2|X_{\mbox{other}}) = \frac{f_2(x_1,x'_2) f_4(x'_2,x_4) f_5(x'_2,x_5)} {\su
 \end{frame}
 
 
-\begin{frame}{Interlude: the Jacobian matrix and its determinant}
+\subsection{Jacobians}
+
+\begin{frame}{The Jacobian matrix and its determinant}
 
 \itemb
 \item Function $F:\Re^n \to \Re^m$
@@ -637,7 +639,7 @@ J_F(x_1,\ldots,x_n) =
 
 \end{frame}
 
-\begin{frame}{Interlude: multidimensional change of variables}
+\begin{frame}{Multidimensional change of variables}
 
 \itemb
  \item If $p(x)$ is pdf of $x$, and $y=F(x)$, what is pdf $q(y)$ of $y$?
@@ -658,6 +660,8 @@ J_{F^{-1}} = \left( J_F \right)^{-1}
 
 \end{frame}
 
+
+\subsection{MCMC on continuous parameters}
 
 \begin{frame}{MCMC on continuous variables}
 
@@ -681,7 +685,7 @@ h(x,x') = \frac{P(x')}{P(x)} \frac{g(u')}{g(u)} \left| \mbox{det}\left(J_F\right
 
 
 
-\begin{frame}{There's more}
+\begin{frame}{There's much more}
 
 \itemb
 \item Summarizing results of an MCMC run
@@ -691,10 +695,14 @@ h(x,x') = \frac{P(x')}{P(x)} \frac{g(u')}{g(u)} \left| \mbox{det}\left(J_F\right
 \item Intra- and inter-chain variance
 \iteme
 \iteme
+Not covered in depth here.
+
 \end{frame}
 
 
 \section{MCMC in bioinformatics}
+
+\subsection{Alignments}
 
 \begin{frame}{Sampling ungapped sequence alignments}
 
@@ -756,23 +764,66 @@ f({\bf n}) = \frac{{\cal B}({\bf n} + {\bf a})}{{\cal B}({\bf a}){\cal B}({\bf n
 \end{frame}
 
 
-\begin{frame}{Sampling ungapped alignments}
+% \begin{frame}{Changing the motif width}
+% 
+% \itemb
+%  \item Sometimes you want to sample over the motif width $M$ as well.
+%   \itemb
+%   \item Consider however the following subtlety that arises if you keep track of the position-specific probabilities as part of the chain (instead of using the Dirichlet-evidence approach).
+%   \item If the chain state is $({\bf x},M,{\bf p}(1) \ldots {\bf p}(M))$ and you move from $M \to M+1$,
+% then you need a new vector of probabilities ${\bf p}(M+1)$ and so the dimensionality of your state space has changed, which is a Bad Thing for reversibility.
+%   \item The idea of \alert{reversible jump MCMC} is to set a ceiling for $M$ (let's say $M_{\max}$) and to let the state be $({\bf x},M,{\bf p}(1) \ldots {\bf p}(M_{\max}))$.
+%   \item For a particular $M < M_{\max}$, the parameters ${\bf p}(M+1) \ldots {\bf p}(M_{\max})$ are unused ``dummy'' parameters that are simply there to pad out your ``real'' parameters,
+% so that the dimensionality of your state space is fixed.
+%   \iteme
+%  \iteme
+% 
+% \end{frame}
+
+
+\subsection{Trees}
+
+\begin{frame}{Sampling trees}
 
 \itemb
- \item Sometimes you want to sample over the motif width $M$ as well.
-  \itemb
-  \item Consider however the following subtlety that arises if you keep track of the position-specific probabilities as part of the chain (instead of using the Dirichlet-evidence approach).
-  \item If the chain state is $({\bf x},M,{\bf p}(1) \ldots {\bf p}(M))$ and you move from $M \to M+1$,
-then you need a new vector of probabilities ${\bf p}(M+1)$ and so the dimensionality of your state space has changed, which is a Bad Thing for reversibility.
-  \item The idea of \alert{reversible jump MCMC} is to set a ceiling for $M$ (let's say $M_{\max}$) and to let the state be $({\bf x},M,{\bf p}(1) \ldots {\bf p}(M_{\max}))$.
-  \item For a particular $M < M_{\max}$, the parameters ${\bf p}(M+1) \ldots {\bf p}(M_{\max})$ are unused ``dummy'' parameters that are simply there to pad out your ``real'' parameters,
-so that the dimensionality of your state space is fixed.
-  \iteme
- \iteme
+\item Priors: coalescent
+\item Moves:
+\itemb
+\item Topology: prune-and-graft operations, swapping nodes \& branches
+\item Branch lengths: rescaling, sliding
+\iteme
+\item Equivalent ML moves:
+\itemb
+\item quartet-puzzling (Strimmer \& von Haeseler)
+\item pplacer's ``pendant branch length'' (Matsen)
+\iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{Extensions}
+
+\itemb
+\item Co-sampling alignment and tree (and secondary/3D structure, ...)
+\item Models and approximations that sum out alignment, ancestral sequence, tree
+\iteme
 
 \end{frame}
 
 
+\subsection{Structures}
+
+\begin{frame}{Molecular dynamics}
+
+\itemb
+\item Folding
+\item Docking
+\item Transport
+\item Kinetics
+\item etc.
+\iteme
+
+\end{frame}
 
 
 \end{document}
