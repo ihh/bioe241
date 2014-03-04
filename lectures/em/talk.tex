@@ -158,6 +158,8 @@ We will see that soft $K$-means is, in fact, EM on a particular model.
 
 \section{Quick overview of EM}
 
+\subsection{Definitions}
+
 \begin{frame}{What is the EM algorithm for?}
 
 EM (Expectation-Maximization) is a very broad family of algorithms
@@ -207,6 +209,8 @@ where
 \end{frame}
 
 
+
+\subsection{Example: two-coin experiment}
 
 \begin{frame}{Example: two-coin mixture}
 
@@ -297,6 +301,8 @@ p_x \leftarrow \frac{h_x}{f_x}
 
 \section{A closer look at EM}
 
+\subsection{Convergence}
+
 \begin{frame}{Proof/derivation of EM}
 
  Following Anders Krogh (Durbin, Krogh {\em et al}, chapter 11.6)
@@ -347,6 +353,8 @@ p_x \leftarrow \frac{h_x}{f_x}
 
 \end{frame}
 
+\subsection{Interpretation}
+
 \begin{frame}{Interpretation}
 
 \itemb
@@ -388,6 +396,8 @@ the corresponding terms in ${\cal E}$ will be $-\theta_i \expect{x_i}$ involving
   \iteme
 
 \end{frame}
+
+\subsection{Physics analogy}
 
 \begin{frame}{Neal and Hinton's variational view of EM}
 
@@ -439,6 +449,8 @@ We will look at two specific examples of how EM can be applied:
 \iteme
 
 \end{frame}
+
+\subsection{Mixture of Gaussians}
 
 \begin{frame}{$K$-means again}
 
@@ -531,6 +543,8 @@ This can be fixed by putting a prior distribution on the parameters $(m_k,v_k)$.
 
 \end{frame}
 
+
+\subsection{Substitution models}
 
 \begin{frame}{Substitution models}
 
