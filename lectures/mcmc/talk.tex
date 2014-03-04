@@ -454,9 +454,47 @@ in which case $\chi^2=m_2$
 
 \section{MCMC in theory}
 
-\subsection{Motivation}
+\subsection{Metropolis-Hastings}
+
 
 \begin{frame}{Motivation}
+
+\itemb
+\item Suppose we have a model e.g.
+\itemb
+\item Observed data $X$, missing data $Y$, parameters $\theta$
+\item Prior $P(\theta)$, likelihood $P(X,Y|\theta)$
+\iteme
+\item Want to sample from some related probability distribution, e.g.
+\itemb
+\item Posterior for missing data: $P(X|Y,\theta)$
+\item Posterior for parameters: $P(\theta|Y)$
+\iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{Phylogenetic MCMC}
+
+Tree-related applications of MCMC
+\itemb
+\item Sampling from posterior of models, parameters
+ \itemb
+ \item Tree topologies, branch lengths
+ \item Structures, alignments
+ \item Phylogeography
+ \iteme
+\item What about ancestral sequence itself?
+ \itemb
+ \item Felsenstein's algorithm works great when state space is small
+  \inone{Nucleotides, amino acids}
+ \item What about when state space is large?
+ \iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{Ancestral reconstruction MCMC}
 
 \begin{tabular}{lr}
 \Tree [ .$x_1$ [ .$x_2$ $y_4$ $y_5$ ] [ .$x_3$ $y_6$ $y_7$ ] ]
@@ -513,8 +551,6 @@ f(i) Q(i,j) = f(j) Q(j,i)
 \iteme
 
 \end{frame}
-
-\subsection{Metropolis-Hastings}
 
 \begin{frame}{Metropolis-Hastings algorithm: the proposal}
 
