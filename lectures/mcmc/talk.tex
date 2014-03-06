@@ -863,6 +863,45 @@ f({\bf n}) = \frac{{\cal B}({\bf n} + {\bf a})}{{\cal B}({\bf a}){\cal B}({\bf n
 
 \end{frame}
 
+
+\begin{frame}{Drummond et al (2002)}
+
+\begin{tabular}{cc}
+  \includegraphics[width=.4\textwidth]{DrummondEtAlMCMC.png}
+&
+  \includegraphics[width=.55\textwidth]{DrummondEtAlCaption.png}
+\end{tabular}
+
+\end{frame}
+
+\begin{frame}{Larget et al (2005)}
+
+  \includegraphics[width=.6\textwidth]{LargetEtAlMCMC.png}
+
+\end{frame}
+
+\begin{frame}{Coalescent prior}
+
+\itemb
+\item Tree $g$ has $n$ leaves, age of $i$'th node is $t_i$, number of lineages between $i-1$ and $i$ is $k_i$
+\item Mean time to coalescence is $\theta$ (=pop.size $\times$ generation time)
+\item Probability density for $g$ is
+\[
+p(g|\theta) = \frac{1}{\theta^{n-1}} \prod_{i=2}^{2n-1} \exp\left(-\frac{k_i(k_i-1)}{2\theta}(t_i-t_{i-1})\right)
+\]
+\item See e.g. Drummond et al (2002)
+\iteme
+
+\end{frame}
+
+\begin{frame}{Skyline Plots}
+
+\centerline{  \includegraphics[width=.5\textwidth]{SkylinePlot.png}  }
+
+Figure: Ho and Shapiro (2011)
+
+\end{frame}
+
 \begin{frame}{Extensions}
 
 \itemb
@@ -871,6 +910,13 @@ f({\bf n}) = \frac{{\cal B}({\bf n} + {\bf a})}{{\cal B}({\bf a}){\cal B}({\bf n
 \iteme
 
 \end{frame}
+
+\begin{frame}{Bali-Phy}
+
+  \includegraphics[width=.9\textwidth]{BaliPhy.jpg}
+
+\end{frame}
+
 
 
 \subsection{Structures}
@@ -884,6 +930,27 @@ f({\bf n}) = \frac{{\cal B}({\bf n} + {\bf a})}{{\cal B}({\bf a}){\cal B}({\bf n
 \item Kinetics
 \item etc.
 \iteme
+
+Protein, RNA, phospholipids, complexes, cells, etc etc.
+
+
+\end{frame}
+
+\begin{frame}{RNA folding}
+
+\itemb
+\item KinFold (Vienna): secondary structure
+\item KineFold (Isambert {\em et al}): pseudoknots, entropy
+\item SimulFold (Meyer {\em et al}): alignment, phylogeny, structure
+\item Multi-resolution Markov State Models (MSMs) (Huang {\em et al}): molecular dynamics + mesoscale Markov chain
+\iteme
+
+\end{frame}
+
+
+\begin{frame}{MSMs}
+
+\centerline{  \includegraphics[width=.4\textwidth]{MSMfolding.jpg}  }
 
 \end{frame}
 
