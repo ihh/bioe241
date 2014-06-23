@@ -109,6 +109,32 @@ but to get a normalized form for $P(\theta|x)$, we need to integrate out $\theta
 
 \end{frame}
 
+\begin{frame}{Motivation}
+
+\begin{eqnarray*}
+L(\theta) = & P(\mbox{data}\ D|\mbox{params}\ \theta) & = \mbox{likelihood} \\
+F(\theta,\alpha) = & P(\theta|\mbox{hyperparams}\ \alpha) & = \mbox{prior} \\
+G(\theta) = & P(\theta|\alpha, D) & = \mbox{posterior} \\
+\end{eqnarray*}
+
+$L$ and $F$ are conjugate if $G(\theta) = F(\theta,\alpha')$ where $\alpha' \equiv \alpha'(\alpha,D)$
+
+\end{frame}
+
+\begin{frame}{Common conjugacies}
+
+\begin{tabular}{lr}
+Likelihood & Prior \\
+\hline
+Exponential & Gamma \\
+Binomial & Beta \\
+Multinomial & Dirichlet \\
+Gaussian (fixed precision) & Gaussian \\
+Gaussian (varying precision) & Gaussian + Gamma \\
+\end{tabular}
+
+\end{frame}
+
 \subsection{Gamma distribution}
 
 \begin{frame}{Gamma distribution}
@@ -428,9 +454,47 @@ in which case $\chi^2=m_2$
 
 \section{MCMC in theory}
 
-\subsection{Motivation}
+\subsection{Metropolis-Hastings}
+
 
 \begin{frame}{Motivation}
+
+\itemb
+\item Suppose we have a model e.g.
+\itemb
+\item Missing data $X$, observed data $Y$, parameters $\theta$
+\item Prior $P(\theta)$, likelihood $P(X,Y|\theta)$
+\iteme
+\item Want to sample from some related probability distribution, e.g.
+\itemb
+\item Posterior for missing data: $P(X|Y,\theta)$
+\item Posterior for parameters: $P(\theta|Y)$
+\iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{Phylogenetic MCMC}
+
+Tree-related applications of MCMC
+\itemb
+\item Sampling from posterior of models, parameters
+ \itemb
+ \item Tree topologies, branch lengths
+ \item Structures, alignments
+ \item Phylogeography
+ \iteme
+\item What about ancestral sequence itself?
+ \itemb
+ \item Felsenstein's algorithm works great when state space is small
+  \inone{Nucleotides, amino acids}
+ \item What about when state space is large?
+ \iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{Ancestral reconstruction MCMC}
 
 \begin{tabular}{lr}
 \Tree [ .$x_1$ [ .$x_2$ $y_4$ $y_5$ ] [ .$x_3$ $y_6$ $y_7$ ] ]
@@ -487,8 +551,6 @@ f(i) Q(i,j) = f(j) Q(j,i)
 \iteme
 
 \end{frame}
-
-\subsection{Metropolis-Hastings}
 
 \begin{frame}{Metropolis-Hastings algorithm: the proposal}
 
@@ -622,7 +684,9 @@ P(x'_2|X_{\mbox{other}}) = \frac{f_2(x_1,x'_2) f_4(x'_2,x_4) f_5(x'_2,x_5)} {\su
 \end{frame}
 
 
-\begin{frame}{Interlude: the Jacobian matrix and its determinant}
+\subsection{Jacobians}
+
+\begin{frame}{The Jacobian matrix and its determinant}
 
 \itemb
 \item Function $F:\Re^n \to \Re^m$
@@ -637,7 +701,7 @@ J_F(x_1,\ldots,x_n) =
 
 \end{frame}
 
-\begin{frame}{Interlude: multidimensional change of variables}
+\begin{frame}{Multidimensional change of variables}
 
 \itemb
  \item If $p(x)$ is pdf of $x$, and $y=F(x)$, what is pdf $q(y)$ of $y$?
@@ -658,6 +722,8 @@ J_{F^{-1}} = \left( J_F \right)^{-1}
 
 \end{frame}
 
+
+\subsection{MCMC on continuous parameters}
 
 \begin{frame}{MCMC on continuous variables}
 
@@ -681,7 +747,7 @@ h(x,x') = \frac{P(x')}{P(x)} \frac{g(u')}{g(u)} \left| \mbox{det}\left(J_F\right
 
 
 
-\begin{frame}{There's more}
+\begin{frame}{There's much more}
 
 \itemb
 \item Summarizing results of an MCMC run
@@ -691,10 +757,14 @@ h(x,x') = \frac{P(x')}{P(x)} \frac{g(u')}{g(u)} \left| \mbox{det}\left(J_F\right
 \item Intra- and inter-chain variance
 \iteme
 \iteme
+Not covered in depth here.
+
 \end{frame}
 
 
 \section{MCMC in bioinformatics}
+
+\subsection{Alignments}
 
 \begin{frame}{Sampling ungapped sequence alignments}
 
@@ -756,23 +826,133 @@ f({\bf n}) = \frac{{\cal B}({\bf n} + {\bf a})}{{\cal B}({\bf a}){\cal B}({\bf n
 \end{frame}
 
 
-\begin{frame}{Sampling ungapped alignments}
+% \begin{frame}{Changing the motif width}
+% 
+% \itemb
+%  \item Sometimes you want to sample over the motif width $M$ as well.
+%   \itemb
+%   \item Consider however the following subtlety that arises if you keep track of the position-specific probabilities as part of the chain (instead of using the Dirichlet-evidence approach).
+%   \item If the chain state is $({\bf x},M,{\bf p}(1) \ldots {\bf p}(M))$ and you move from $M \to M+1$,
+% then you need a new vector of probabilities ${\bf p}(M+1)$ and so the dimensionality of your state space has changed, which is a Bad Thing for reversibility.
+%   \item The idea of \alert{reversible jump MCMC} is to set a ceiling for $M$ (let's say $M_{\max}$) and to let the state be $({\bf x},M,{\bf p}(1) \ldots {\bf p}(M_{\max}))$.
+%   \item For a particular $M < M_{\max}$, the parameters ${\bf p}(M+1) \ldots {\bf p}(M_{\max})$ are unused ``dummy'' parameters that are simply there to pad out your ``real'' parameters,
+% so that the dimensionality of your state space is fixed.
+%   \iteme
+%  \iteme
+% 
+% \end{frame}
+
+
+\subsection{Trees}
+
+\begin{frame}{Sampling trees}
 
 \itemb
- \item Sometimes you want to sample over the motif width $M$ as well.
-  \itemb
-  \item Consider however the following subtlety that arises if you keep track of the position-specific probabilities as part of the chain (instead of using the Dirichlet-evidence approach).
-  \item If the chain state is $({\bf x},M,{\bf p}(1) \ldots {\bf p}(M))$ and you move from $M \to M+1$,
-then you need a new vector of probabilities ${\bf p}(M+1)$ and so the dimensionality of your state space has changed, which is a Bad Thing for reversibility.
-  \item The idea of \alert{reversible jump MCMC} is to set a ceiling for $M$ (let's say $M_{\max}$) and to let the state be $({\bf x},M,{\bf p}(1) \ldots {\bf p}(M_{\max}))$.
-  \item For a particular $M < M_{\max}$, the parameters ${\bf p}(M+1) \ldots {\bf p}(M_{\max})$ are unused ``dummy'' parameters that are simply there to pad out your ``real'' parameters,
-so that the dimensionality of your state space is fixed.
-  \iteme
- \iteme
+\item Priors: coalescent
+\item Moves:
+\itemb
+\item Topology: prune-and-graft operations, swapping nodes \& branches
+\item Branch lengths: rescaling, sliding
+\iteme
+\item Equivalent ML moves:
+\itemb
+\item quartet-puzzling (Strimmer \& von Haeseler)
+\item pplacer's ``pendant branch length'' (Matsen)
+\iteme
+\iteme
 
 \end{frame}
 
 
+\begin{frame}{Drummond et al (2002)}
+
+\begin{tabular}{cc}
+  \includegraphics[width=.4\textwidth]{DrummondEtAlMCMC.png}
+&
+  \includegraphics[width=.55\textwidth]{DrummondEtAlCaption.png}
+\end{tabular}
+
+\end{frame}
+
+\begin{frame}{Larget et al (2005)}
+
+  \includegraphics[width=.6\textwidth]{LargetEtAlMCMC.png}
+
+\end{frame}
+
+\begin{frame}{Coalescent prior}
+
+\itemb
+\item Tree $g$ has $n$ leaves, age of $i$'th node is $t_i$, number of lineages between $i-1$ and $i$ is $k_i$
+\item Mean time to coalescence is $\theta$ (=pop.size $\times$ generation time)
+\item Probability density for $g$ is
+\[
+p(g|\theta) = \frac{1}{\theta^{n-1}} \prod_{i=2}^{2n-1} \exp\left(-\frac{k_i(k_i-1)}{2\theta}(t_i-t_{i-1})\right)
+\]
+\item See e.g. Drummond et al (2002)
+\iteme
+
+\end{frame}
+
+\begin{frame}{Skyline Plots}
+
+\centerline{  \includegraphics[width=.5\textwidth]{SkylinePlot.png}  }
+
+Figure: Ho and Shapiro (2011)
+
+\end{frame}
+
+\begin{frame}{Extensions}
+
+\itemb
+\item Co-sampling alignment and tree (and secondary/3D structure, ...)
+\item Models and approximations that sum out alignment, ancestral sequence, tree
+\iteme
+
+\end{frame}
+
+\begin{frame}{Bali-Phy}
+
+  \includegraphics[width=.9\textwidth]{BaliPhy.jpg}
+
+\end{frame}
+
+
+
+\subsection{Structures}
+
+\begin{frame}{Molecular dynamics}
+
+\itemb
+\item Folding
+\item Docking
+\item Transport
+\item Kinetics
+\item etc.
+\iteme
+
+Protein, RNA, phospholipids, complexes, cells, etc etc.
+
+
+\end{frame}
+
+\begin{frame}{RNA folding}
+
+\itemb
+\item KinFold (Vienna): secondary structure
+\item KineFold (Isambert {\em et al}): pseudoknots, entropy
+\item SimulFold (Meyer {\em et al}): alignment, phylogeny, structure
+\item Multi-resolution Markov State Models (MSMs) (Huang {\em et al}): molecular dynamics + mesoscale Markov chain
+\iteme
+
+\end{frame}
+
+
+\begin{frame}{MSMs}
+
+\centerline{  \includegraphics[width=.4\textwidth]{MSMfolding.jpg}  }
+
+\end{frame}
 
 
 \end{document}
