@@ -101,6 +101,8 @@
 \item Stochastic Processes in Physics and Chemistry. \\ N.G. Van Kampen
 \item Stochastic Methods: A Handbook for the Natural and Social Sciences. \\ C. Gardiner
 \item Information Theory, Inference, and Learning Algorithms. \\ D. MacKay
+\item Gillespie
+\item Berg
   \iteme
   
 \end{frame}
@@ -110,28 +112,28 @@
 
 \begin{frame}{}
 
-\itemb
- \item Review of salient facts about Gaussian distributions (Gardiner p36-37)
-  \itemb
-  \item Multivariate Gaussian: if ${\bf x}$ is a vector of $n$ Gaussian r.v.s,
+
+  Review of salient facts about Gaussian distributions (Gardiner p36-37)
+  
+   Multivariate Gaussian: if ${\bf x}$ is a vector of $n$ Gaussian r.v.s,
 \[
 P({\bf x}) = [ 2\pi \det(\sigma) ]^{-1/2} \exp \left( -\frac{1}{2}({\bf x} - \bar{\bf x})^T \sigma^{-1} ({\bf x} - \bar{\bf x}) \right)
 \]
 where $\bar{\bf x}$ is mean and $\sigma$ is (symmetric) covariance matrix.
-  \item Characteristic function
+   Characteristic function
 \[
 \phi({\bf s}) = \expect{\exp(i {\bf s}^T {\bf x})} = \exp(i {\bf s}^T \bar{\bf x} - \frac{1}{2} {\bf s}^T \sigma {\bf s})
 \]
-\iteme
 
-\iteme
+
+
 
 \end{frame}
 
 
 \begin{frame}{}
-\itemb
-  \item General formulae for moments when $\bar{\bf x}=0$: odd moments are zero, higher moments satisfy
+
+   General formulae for moments when $\bar{\bf x}=0$: odd moments are zero, higher moments satisfy
 \[
 \expect{x_i x_j x_k \ldots} = \frac{2N!}{N! 2^N} \{ \sigma_{ij} \sigma_{kl} \sigma_{mn} \ldots \}_{\mbox{sym}}
 \]
@@ -142,7 +144,7 @@ where ``sym'' means the symmetrized form of the product of $\sigma$'s, and $2N$ 
 & = & \sigma_{12}\sigma_{34} + \sigma_{13}\sigma_{24} + \sigma_{14}\sigma_{23} \\
 \expect{x_i^4} & = & 3 \sigma^2_{ii}
 \end{eqnarray*}
-\iteme
+
 
 \end{frame}
 
@@ -173,20 +175,20 @@ Therefore, in the limit $n \to \infty$, $z$ is Gaussian-distributed.
 
 \begin{frame}{}
 
-\itemb
-\item Definition of a Gaussian process (van Kampen p63-64)
- \itemb
- \item ``Hierarchy of Distribution Functions'' (van Kampen p61+). Consider timepoints $t_1 < t_2 < t_3 \ldots t_n$. Define
+
+ Definition of a Gaussian process (van Kampen p63-64)
+ 
+  ``Hierarchy of Distribution Functions'' (van Kampen p61+). Consider timepoints $t_1 < t_2 < t_3 \ldots t_n$. Define
 \begin{eqnarray*}
   & & P_n(x_1,t_1;x_2,t_2;\ldots;x_n,t_n) \\
   & & \equiv P(x(t_1) = x_1, x(t_2) = x_2, \ldots, x(t_n) = x_n)
 \end{eqnarray*}
- \item If $P_n$ is an $n$-dimensional Gaussian $\forall n, \{ t_1 \ldots t_n \}$, then $x(t)$ is a {\em Gaussian process}. The covariance matrix is $\sigma_{ij} = \expect{x(t_i) x(t_j)}$
- \item Marginals of a multivariate Gaussian are themselves multivariate Gaussians.
+  If $P_n$ is an $n$-dimensional Gaussian $\forall n, \{ t_1 \ldots t_n \}$, then $x(t)$ is a {\em Gaussian process}. The covariance matrix is $\sigma_{ij} = \expect{x(t_i) x(t_j)}$
+  Marginals of a multivariate Gaussian are themselves multivariate Gaussians.
 The full distribution $P(x(t))$ can be thought of as an infinite-dimensional Gaussian, $P_\infty$
- \item A Gaussian process is effectively a prior over functions, that can be fully specified by the covariance function
- \iteme
-\iteme
+  A Gaussian process is effectively a prior over functions, that can be fully specified by the covariance function
+ 
+
 
 \end{frame}
 
@@ -205,19 +207,19 @@ Define an arbitray auxiliary test function, $k(t)$. Then $G([k])$ is the followi
 
 \begin{frame}{}
 
-\itemb
-\item Inference, prediction, clustering with GPs (MacKay chapter 45, p535-548; MacKay 1998, ``Introduction to Gaussian Processes'')
- \itemb
- \item Suppose we have $N$ datapoints, $\{ {\bf x}^{(n)}, t_n \}_{n=1}^N$.
+
+ Inference, prediction, clustering with GPs (MacKay chapter 45, p535-548; MacKay 1998, ``Introduction to Gaussian Processes'')
+ 
+  Suppose we have $N$ datapoints, $\{ {\bf x}^{(n)}, t_n \}_{n=1}^N$.
 The input variables ${\bf x}^{(n)}$ are $I$-dimensional vectors.
 The target variables $t_n$ will be assumed real scalars (corresponding to interpolation or regression problems).
- \item Goal: fit some (nonlinear) function $y({\bf x})$. Posterior probability of $y({\bf x})$ is
+  Goal: fit some (nonlinear) function $y({\bf x})$. Posterior probability of $y({\bf x})$ is
 \[
 P(y({\bf x})|{\bf t}_N,{\bf X}_N) = \frac{P({\bf t}_N|y({\bf x}),{\bf X}_N) P(y({\bf x}))}{P({\bf t}_N|{\bf X}_N)}
 \]
 Typically $t_k = y(x_k)+$ separable Gaussian noise.
-\iteme
-\iteme
+
+
 
 \end{frame}
 
@@ -227,11 +229,11 @@ Typically $t_k = y(x_k)+$ separable Gaussian noise.
 P(y({\bf x})|{\bf t}_N,{\bf X}_N) = \frac{P({\bf t}_N|y({\bf x}),{\bf X}_N) P(y({\bf x}))}{P({\bf t}_N|{\bf X}_N)}
 \]
 
-\itemb
-\item
+
+
 In parametric approaches, $y({\bf x}) \equiv y({\bf x};{\bf w})$ where ${\bf w}$ is a set of parameters over which we place some prior.
 In nonparametric approaches (e.g. Gaussian processes), we place a prior directly on $P(y({\bf x}))$.
-\iteme
+
 
 \end{frame}
 
@@ -249,9 +251,9 @@ The operator ${\bf A}$ must be {\em positive definite}, i.e. $y({\bf x})^T {\bf 
 
 \begin{frame}{}
  Parametric approaches; fixed, adaptive basis functions; neural nets (MacKay p536-537)
- \itemb
- \item Consider a set of basis functions, $\{ \phi_h({\bf x}) \}_{h=1}^H$.
- \item Case \#1: fixed basis functions (parameters indep. of ${\bf w}$)
+ 
+  Consider a set of basis functions, $\{ \phi_h({\bf x}) \}_{h=1}^H$.
+  Case \#1: fixed basis functions (parameters indep. of ${\bf w}$)
 \[
 y({\bf x};{\bf w}) = \sum_{h=1}^H w_h \phi_h({\bf x})
 \]
@@ -260,18 +262,18 @@ e.g. radial basis functions
 \phi_h({\bf x}) = \exp \left[ -\frac{({\bf x}-{\bf c}_h)^2}{2r^2} \right]
 \]
 In this model, $y$ is a linear function of ${\bf w}$.
-\iteme
+
 
 \end{frame}
 
 \begin{frame}{}
-  \itemb
-  \item Let $R_{nh} = \phi_h ({\bf x}^{(n)})$.
+  
+   Let $R_{nh} = \phi_h ({\bf x}^{(n)})$.
 Then $y^{(n)} = \sum_h R_{nh} w_h$.
 Let ${\bf y} = (y^{(1)}, y^{(2)} \ldots y^{(N)})$ be the vector of $y$-values and
 let ${\bf w} = (w^{(1)}, w^{(2)} \ldots w^{(N)})$ be the vector of corresponding $w$-values.
 Thus ${\bf y} = {\bf Rw}$.
-  \item If ${\bf w}$ is Gaussian-distributed
+   If ${\bf w}$ is Gaussian-distributed
 \[
 P({\bf w}) = {\cal N}({\bf 0},\sigma^2_w {\bf I})
 \]
@@ -280,11 +282,11 @@ then ${\bf y}$ is also Gaussian with covariance matrix
 \expect{{\bf yy}^T} = \expect{{\bf Rww}^T{\bf R}^T}
  = {\bf R}\expect{{\bf ww}^T}{\bf R}^T = \sigma^2_w \expect{{\bf RR}^T}
 \]
-  \item Additive noise: if ${\bf t} = {\bf y} + {\bf v}$ where $v_k \sim {\cal N}(0,\sigma^2_v)$ then
+   Additive noise: if ${\bf t} = {\bf y} + {\bf v}$ where $v_k \sim {\cal N}(0,\sigma^2_v)$ then
 \[
 P({\bf w}) = {\cal N}({\bf 0},\sigma^2_w {\bf RR}^T + \sigma^2_v {\bf I})
 \]
-  \iteme
+  
 \end{frame}{}
 
 \begin{frame}
@@ -340,10 +342,10 @@ this gives a Gaussian process model with MAP estimates identical to those produc
 % (NB MacKay (p539) has a different, incompatible form for this prior, with $h^{k/2}$ instead of $2\pi h^{2k}$;
 % not sure where the error is, but the fundamental point (it's Gaussian) is unaffected.)
 
-% \item Gaussian process regression (MacKay p542-543)
-% \item Example covariance functions (MacKay p543-545; Abrahamsen, 1997); Wiener, Ornstein-Uhlenbeck
-% \item Adaptive inference: learning the hyperparameters of the covariance function (MacKay p545-546)
-% \item Gaussian process classifiers (MacKay p547)
+%  Gaussian process regression (MacKay p542-543)
+%  Example covariance functions (MacKay p543-545; Abrahamsen, 1997); Wiener, Ornstein-Uhlenbeck
+%  Adaptive inference: learning the hyperparameters of the covariance function (MacKay p545-546)
+%  Gaussian process classifiers (MacKay p547)
 
 % \end{frame}
 
@@ -352,21 +354,26 @@ this gives a Gaussian process model with MAP estimates identical to those produc
 \begin{frame}{}
 
 Kramers-Moyal expansion (treatment follows van Kampen p197-198; see also Gillespie p74+)
- \itemb
- \item The most general form of the {\em master equation} for a continuous-time stochastic process can be written
+ 
+  The most general form of the {\em master equation} for a continuous-time stochastic process can be written
 \[
 \pderivop{t} p(x,t) = \int W(x-r;r) p(x-r,t) dr - p(x,t) \int W(x;r) dr
 \]
 where $W(x;r)$ is the rate from $x$ to $x+r$.
 In the notation we used for discrete state spaces, $W(x;r) \equiv R_{x,x+r}$
- \item Assuming that $W(x;r)$ varies smoothly in $x$ and is sharply peaked in $r$,
+\end{frame}
+\begin{frame}
+\[
+\pderivop{t} p(x,t) = \int W(x-r;r) p(x-r,t) dr - p(x,t) \int W(x;r) dr
+\]
+Assuming that $W(x;r)$ varies smoothly in $x$ and is sharply peaked in $r$,
 we can write the term $W(x-r;r)p(x-r,t)$ in the first integral as a Taylor expansion in $x$:
 \[
 \pderivop{t} p(x,t) = \sum_{n=0}^\infty \int \frac{(-r)^n}{n!} \pderivopn{x}{n} \left\{ W(x;r) p(x,t) \right\} dr
  - p(x,t) \int W(x;r) dr
 \]
 (Note that we're only allowed to expand $W(x;r)$ in $x$, not in $r$, since it varies smoothly in $x$ but rapidly in $r$.)
-\iteme
+
 \end{frame}
 
 \begin{frame}{}
@@ -402,59 +409,72 @@ Whatever the precise form of $W(x;r)$, we're effectively assuming that we can ch
 Since $x_n = \sum \Xi_n$, the process $x_n$ and hence $x(t)$ tends towards a Gaussian, by the central limit theorem.
 \end{frame}
 
-\begin{frame}{}
-Gillespie uses different terminology:
-the continuous-time version of what we have called $\Xi_n$ is the ``propagator''
-and is written explicitly as a function of $dt$, i.e. $\Xi(dt;x,t)$;
-$W(x;r)$ is the ``propagator density function'' and is written $\Pi(r|dt;x,t)$ (Gillespie p67);
-and the $a_n(x)$ are the {\em propagator moment functions} and are written $B_n$ (Gillespie p68).
-Gillespie makes the argument that the propagator density function is a Gaussian to first order in $dt$ (Gillespie p114-115).
+% \begin{frame}{}
+% Gillespie uses different terminology:
+% the continuous-time version of what we have called $\Xi_n$ is the ``propagator''
+% and is written explicitly as a function of $dt$, i.e. $\Xi(dt;x,t)$;
+% $W(x;r)$ is the ``propagator density function'' and is written $\Pi(r|dt;x,t)$ (Gillespie p67);
+% and the $a_n(x)$ are the {\em propagator moment functions} and are written $B_n$ (Gillespie p68).
+% Gillespie makes the argument that the propagator density function is a Gaussian to first order in $dt$ (Gillespie p114-115).
+% 
+% \end{frame}
 
-\end{frame}
-
 \begin{frame}{}
-\itemb
-\item  Fokker-Planck equation (Gillespie p121; van Kampen p193+)
-\itemb
- \item Fokker-Planck describes the time evolution of the probability density for a continuous stochastic process
+
+  Fokker-Planck equation (Gillespie p121; van Kampen p193+)
+
+  Fokker-Planck describes the time evolution of the probability density for a continuous stochastic process
 \[
 \pderivop{t} p(x,t) = -\pderivop{x} A(x,t)p(x,t) + \frac{1}{2} \pderivopn{x}{2} B(x,t)p(x,t)
 \]
- \item By comparison with the Kramers-Moyal expansion we see that $A=a_1$ and $B=a_2$,
+  By comparison with the Kramers-Moyal expansion we see that $A=a_1$ and $B=a_2$,
 so $A$ and $B$ are the mean and variance of the drift (i.e. the jump rate $W(x;r)$).
-  \itemb
-  \item When $B=0$, we have a (deterministic) Liouville process.
-  \item When $A=0$ and $B$ is constant, we have Brownian motion, aka the Wiener process.
-  \item When $A=-kx$ and $B$ is constant, we have Brownian motion with exponential decay, aka the Ornstein-Uhlenbeck process.
-  \iteme
- \item Note that the terms $A(x,t)$ and $B(x,t)$ are time-dependent, unlike our earlier treatment of the Kramers-Moyal expansion.
+  
+   When $B=0$, we have a (deterministic) Liouville process.
+   When $A=0$ and $B$ is constant, we have Brownian motion, aka the Wiener process.
+   When $A=-kx$ and $B$ is constant, we have Brownian motion with exponential decay, aka the Ornstein-Uhlenbeck process.
+  
+\end{frame}
+\begin{frame}{}
+\[
+\pderivop{t} p(x,t) = -\pderivop{x} A(x,t)p(x,t) + \frac{1}{2} \pderivopn{x}{2} B(x,t)p(x,t)
+\]
+  Note that the terms $A(x,t)$ and $B(x,t)$ are time-dependent, unlike our earlier treatment of the Kramers-Moyal expansion.
 This is just because we didn't allow the jump rate $W(x;r)$ to be a function of $t$.
 It's straightforward to repeat the Kramers-Moyal expansion using time-dependent jump rates and moments, $W(x;r;t)$ and $a_n(x;t)$.
- \iteme
-\item Moment evolution equations (Gillespie p81-87)
- \itemb
- \item Using the (time-dependent) propagator we have $x(t+dt) = x(t) + \Xi(dt;x(t),t)$ and hence
-\[
-x^n(t+dt) = \left[ x(t) + \Xi(dt;x(t),t) \right]^n = x^n(t) + \sum_{k=1}^n \binom{n}{k} \times x^{n-k}(t) \Xi^k(dt;x(t),t)
-\]
-To find the expectation of this we use the following result (see Gillespie p68,82-83 for justification)
+ 
+\end{frame}
+
+\begin{frame}{}
+%  Moment evolution equations (Gillespie p81-87)
+ 
+  Using the (time-dependent) propagator we have $x(t+dt) = x(t) + \Xi(dt;x(t),t)$ and hence
+\begin{eqnarray*}
+  x^n(t+dt) & = & \left[ x(t) + \Xi(dt;x(t),t) \right]^n \\
+  & = & x^n(t) + \sum_{k=1}^n \binom{n}{k} \times x^{n-k}(t) \Xi^k(dt;x(t),t)
+\end{eqnarray*}
+To find the expectation of this we use the following result % (see Gillespie p68,82-83 for justification)
 \begin{equation}
 \label{eq:PropagatorMoments}
 \expect{x^j(t) \Xi^k(dt;x(t),t)} = \expect{x^j(t) b_k(t)} dt + O(dt)
 \end{equation}
 (where $b_k(t) \equiv a_k(x(t))$ is just an alternate notation for the $k$'th jump moment).
+\end{frame}
+\begin{frame}{}
 Hence we arrive at the {\em moment evolution equations}
 \[
 \derivop{t} \expect{x^n(t)} = \sum_{k=1}^n \binom{n}{k} \expect{x^{n-k}(t) b_k(t)}
 \]
 with the initial conditions $\expect{x^n(0)} = x_0^n$.
- \item A further application of (\ref{eq:PropagatorMoments}) gives the evolution of the autocorrelation function
+  A further application of (\ref{eq:PropagatorMoments}) gives the evolution of the autocorrelation function
 \begin{eqnarray*}
 \expect{x(t_1)x(t_2+dt_2)} & = & \expect{x(t_1)x(t_2) + x(t_1)\Xi(dt;x(t_2),t_2)} \\
 & = & \expect{x(t_1)x(t_2)} + \expect{x(t_1)b_1(t_2)} \\
 \derivop{t_2} \expect{x(t_1)x(t_2)} & = & \expect{x(t_1)b_1(t_2)}
 \end{eqnarray*}
- \item Putting these together, we obtain the following equations for the evolution of the mean, variance and covariance
+\end{frame}
+\begin{frame}{}
+  Putting these together, we obtain the following equations for the evolution of the mean, variance and covariance
 \begin{eqnarray*}
 \derivop{t} \expect{x(t)} & = & \expect{b_1(t)} \\
 \derivop{t} \var{x(t)} & = & \derivop{t} \left( \expect{x^2(t)} - \expect{x(t)}^2 \right) \\
@@ -463,26 +483,28 @@ with the initial conditions $\expect{x^n(0)} = x_0^n$.
 & = & \expect{x(t_1)b_1(t_2)} - \expect{x(t_1)}\expect{b_1(t_2)}
 \end{eqnarray*}
 with the initial conditions
-\begin{eqnarray*}
-\expect{x(t_0)} & = & x_0 \\
-\var{x(t_0)} & = & 0 \\
-\cov{x(t_1)x(t_2=t_1)} & = & \var{x(t_1)}
-\end{eqnarray*}
+$\expect{x(t_0)} = x_0$,
+$\var{x(t_0)} = 0$,
+$\cov{x(t_1)x(t_2=t_1)} = \var{x(t_1)}$.
+
 These equations are closed iff (for $n=1,2$) $b_n(t)=a_n(x(t))$ is a polynomial in $x$ of degree $\leq n$ (Gillespie p86).
- \item The covariance is all we need to do inference with Gaussian processes, but it's useful to look deeper
- \iteme
-\item Liouville processes (Gillespie p126)
- \itemb
- \item When $B(x,t)=0$, the jump rate $W(x;r)$ has no variance.
+ 
+\end{frame}
+\begin{frame}{}
+  The covariance is all we need to do inference with Gaussian processes, but it's useful to look deeper.
+
+  Liouville processes (Gillespie p126)
+ 
+  When $B(x,t)=0$, the jump rate $W(x;r)$ has no variance.
 It must therefore be a delta function in $r$, and we can write
 \[
 x(t+dt) - x(t) = A(x(t),t) dt
 \]
 that is, $\derivop{t} = A(x,t)$.
- \item This is a completely deterministic process, or {\em Liouville process}.
- \item The Liouville process guides intuition as to the role of $A(x,t)$ in the Fokker-Planck equation.
- \iteme
-\iteme
+  This is a completely deterministic process, or {\em Liouville process}.
+  The Liouville process guides intuition as to the role of $A(x,t)$ in the Fokker-Planck equation.
+ 
+
 
 \end{frame}
 
@@ -490,16 +512,26 @@ that is, $\derivop{t} = A(x,t)$.
 
 \begin{frame}{}
 
-The Wiener process (undamped Brownian motion, diffusive drift, limit of random walk...)
- \itemb
- \item Derivation of Fick's equations for one-dimensional diffusion (Berg, ``Random Walks in Biology'', p18-20)
-  \itemb
-  \item Discrete random walk: $x(n) = \sum_{i=1}^n d_i$ where $P(d_i = +\delta) = P(d_i = -\delta) = 1/2$
-   \itemb
-   \item Implies that $\expect{x(n)} = 0$ and $\expect{x(n)^2} = n \delta^2$
-   \item If each step takes time $\tau$ then $n = t/\tau$, so $\expect{x(n)^2} = \frac{\delta^2}{\tau} t = 2Dt$
+% The Wiener process (undamped Brownian motion, diffusive drift, limit of random walk...)
+ 
+%  Derivation of Fick's equations for one-dimensional diffusion (Berg, ``Random Walks in Biology'', p18-20)
+  
+  Discrete random walk
+
+  $x(n) = \sum_{i=1}^n d_i$ where $P(d_i = +\delta) = P(d_i = -\delta) = 1/2$
+   
+  Implies that
+  \begin{eqnarray*}
+    \expect{x(n)} & = & 0 \\
+    \expect{x(n)^2} & = & n \delta^2
+    \end{eqnarray*}
+
+    If each step takes time $\tau$ then $n = t/\tau$, so $\expect{x(n)^2} = \frac{\delta^2}{\tau} t = 2Dt$
 where $D = \delta^2/2\tau$ is the diffusion constant
-   \item Let $r(x,t) = P(x(t)=x)$.
+
+\end{frame}
+\begin{frame}{}
+Let $r(x,t) = P(x(t)=x)$.
 In time $\tau$, a particle at $x$ has probability $1/2$ of drifting to $x+\delta$, and a particle at $x+\delta$ has probability $1/2$ of drifting to $x$.
 The net flux of probability mass from $x$ to $x+\delta$ is
 \[
@@ -511,7 +543,8 @@ The continuous limit of $r(x,t)/\delta$ is the probability density $p(x,t)$ and 
 J(x) = -D \pderiv{p}{x}
 \]
 This is a version of {\em Fick's first equation} (Berg p18).
-
+\end{frame}
+\begin{frame}{}
 Consider the interval from $x$ to $x+\delta$. Flux from the left is $J(x)$ and from the right $-J(x+\delta)$.
 Since probability mass is conserved, we have
 \[
@@ -522,21 +555,27 @@ Dividing through by $\delta \tau$, taking the continuous limit and substituting 
 \pderiv{p}{t} = D \pderivn{p}{x}{2}
 \]
 This is {\em Fick's second equation} (Berg p20), aka the master equation (or Fokker-Planck equation) for Brownian motion.
-  \item In the continuous limit ($\tau \to 0$),
+\end{frame}
+\begin{frame}{}
+   In the continuous limit ($\tau \to 0$),
 $x(t)$ is the sum of a large number ($n=t/\tau$) of IID rvs (the $d_i$'s).
 By the central limit theorem, the finite-time increments $x(t_2)-x(t_1)$ must be Gaussian-distributed,
 so $x(t)$ is a Gaussian process.
-  \item Furthermore, $x(t_2)-x(t_1)$ is independent of $x(t_3)-x(t_2)$. This is called {\em independence of increments}.
-  \iteme
- \iteme
- \item Fokker-Planck equation for Wiener process (Gardiner p66-70). Choose units such that $\delta^2 = \tau, D=\frac{1}{2}$.
+   Furthermore, $x(t_2)-x(t_1)$ is independent of $x(t_3)-x(t_2)$. This is called {\em independence of increments}.
+  
+\end{frame}
+\begin{frame}{}
+ 
+  Fokker-Planck equation for Wiener process (Gardiner p66-70). Choose units such that $\delta^2 = \tau, D=\frac{1}{2}$.
 Then
 \[
 \pderivop{t} p(x,t) = \frac{1}{2} \pderivopn{x}{2} p(x,t)
 \quad\quad\quad
 p(x,0) = \delta(x)
 \]
- \item Fourier-transforming the Fokker-Planck equation gives for the characteristic function
+\end{frame}
+\begin{frame}{}
+  Fourier-transforming the Fokker-Planck equation gives for the characteristic function
 $\phi(s,t) = \expect{\exp(\imath sx(t))}_{x(t)}$
 \[
 \pderivop{t} \phi = -\frac{1}{2} s^2 \phi
@@ -548,25 +587,31 @@ The Fourier inversion gives
 \[
 p(x,t) = (2\pi t)^{-1/2} \exp \left( -\frac{x^2}{2t} \right)
 \]
+\end{frame}
+\begin{frame}{}
 % I forget exactly how you show that $\int_{-\infty}^{\infty} \exp(-s^2+ix) ds = \int_{-\infty}^{\infty} \exp(-s^2) ds$ ...
 % However, by inspection $\phi(s,t)$ is the Fourier transform of a Gaussian, so.
- \item Autocorrelation function:
+  Autocorrelation function:
 \[
 \expect{x(t_1)x(t_2)} = \expect{x(t_1)^2} + \expect{x(t_1)(x(t_2)-x(t_1))} = t_1
 \]
 since the second expectation vanishes due to independence of increments.
- \item Non-differentiable/fractal nature of sample trajectories:
-\[
-P(|x(t+\epsilon) - x(t)| > k\epsilon) = 2\int_{k\epsilon}^\infty p(x,\epsilon) dx
-= 2\int_{k\epsilon}^\infty (2\pi \epsilon)^{-1/2} \exp \left( -\frac{x^2}{2\epsilon} \right) dx
-\]
+\end{frame}
+\begin{frame}{}
+  Non-differentiable/fractal nature of sample trajectories:
+\begin{eqnarray*}
+P(|x(t+\epsilon) - x(t)| > k\epsilon) & = & 2\int_{k\epsilon}^\infty p(x,\epsilon) dx \\
+& = & 2\int_{k\epsilon}^\infty (2\pi \epsilon)^{-1/2} \exp \left( -\frac{x^2}{2\epsilon} \right) dx
+\end{eqnarray*}
 In the limit $\epsilon \to 0$, this is one
 (intuitively, $|x(\epsilon)|_{\mbox{rms}} \sim \sqrt{\epsilon}$, so $\epsilon$ approaches zero faster than $x$ does).
 This means that the derivative of $x(t)$ is infinite  ``almost surely'' (in probabilistic terminology).
+\end{frame}
+%\begin{frame}{}
 % Section on eigenfunctions commented out because I'm not sure if this is valid for the (non-stationary) Wiener process...
 % See also van Kampen p117-122.
 %
-%  \item Eigenfunctions of the Wiener process (Gardiner p132; van Kampen p117-122).
+%   Eigenfunctions of the Wiener process (Gardiner p132; van Kampen p117-122).
 % We are looking for $\{\lambda,P_\lambda(x)\}$ satisfying
 % \[
 % \frac{1}{2} \pderivopn{x}{2} P_\lambda(x) = \lambda P_\lambda(x)
@@ -593,34 +638,41 @@ This means that the derivative of $x(t)$ is infinite  ``almost surely'' (in prob
 % and so no stationary solution exists.
 % 
 % % autocorrelations in terms of $b_n$ ?
- \iteme
+ 
 % method of characteristics as an alternate way to solve for $p(x,t)$ ?
 
-\end{frame}
+%\end{frame}
 
 \section{The Ornstein-Uhlenbeck process}
 
 \begin{frame}{}
 
-The Ornstein-Uhlenbeck process: Brownian motion with exponential decay (van Kampen p83-85)
- \itemb
- \item Originally constructed to describe the {\em velocity} of a Brownian particle (van Kampen p84)
- \item Fokker-Planck equation (Gardiner p74-77)
+The Ornstein-Uhlenbeck process: random walk with damping.
+Describes {\em velocity} of Brownian particle. % (van Kampen p84)
+
+% Fokker-Planck equation % (Gardiner p74-77)
 \[
 \pderivop{t} p(x,t) = \pderivop{x} (kxp(x,t)) + \frac{1}{2} D \pderivopn{x}{2} p(x,t)
 \]
 Boundary condition is $p(x,0) = \delta(x-x_0)$.
- \item Characteristic equation for $\phi(s,t) = \expect{\exp(\imath sx)}$
+
+Characteristic equation for $\phi(s,t) = \expect{\exp(\imath sx)}$
 \begin{equation}
-\label{eq:OrnsteinUhlenbeckCharacteristicEquation}
+%\label{eq:OrnsteinUhlenbeckCharacteristicEquation}
 \pderivop{t} \phi(s,t) + ks\pderivop{s} \phi(s,t) = -\frac{1}{2} Ds^2 \phi(s,t)
 \end{equation}
 Boundary condition is $\phi(s,0) = \exp(\imath sx_0)$.
 \\
 (Here we have used $\int \exp(\imath sx) \pderivop{x} (xp) dx = -\int \imath s \exp(\imath sx) xp dx = -s \pderivop{s} \int \exp(\imath sx) pdx = -s \pderiv{\phi}{s}$)
-  \itemb
-  \item Method of characteristics: see Gardiner p75.
-Let $t=t(r)$ and $s=s(r)$. Then
+\end{frame}
+\begin{frame}{}
+  
+%   Method of characteristics: see Gardiner p75.
+\begin{equation}
+\label{eq:OrnsteinUhlenbeckCharacteristicEquation}
+\pderivop{t} \phi(s,t) + ks\pderivop{s} \phi(s,t) = -\frac{1}{2} Ds^2 \phi(s,t)
+\end{equation}
+Method of characteristics: let $t=t(r)$ and $s=s(r)$
 \[
 \deriv{\phi}{r} = \pderiv{\phi}{t} \deriv{t}{r} + \pderiv{\phi}{s} \deriv{s}{r}
 \]
@@ -629,6 +681,11 @@ which is the same as (\ref{eq:OrnsteinUhlenbeckCharacteristicEquation}) if
 dr = \frac{dt}{1} = \frac{ds}{ks} = -\frac{d\phi}{\frac{1}{2} Ds^2 \phi}
 \]
 (which Gardiner calls the ``subsidary equation'').
+\end{frame}
+\begin{frame}{}
+\[
+dr = \frac{dt}{1} = \frac{ds}{ks} = -\frac{d\phi}{\frac{1}{2} Ds^2 \phi}
+\]
 Integrating the equation involving $ds$ and $dt$, and the equation involving $ds$ and $d\phi$, gives
 \[
 s = a \exp(kt)
@@ -643,14 +700,25 @@ u(s,t,\phi) & = & s\exp(-kt) & = & a \\
 v(s,t,\phi) & = & \phi\exp(Ds^2/4k) & = & b
 \end{array}
 \]
+\end{frame}
+\begin{frame}{}
+\[
+\begin{array}{rccccccl}
+dr & = & \frac{dt}{1} & = & \frac{ds}{ks} & = & -\frac{d\phi}{\frac{1}{2} Ds^2 \phi} \\
+u(s,t,\phi) & = & \multicolumn{3}{c}{s\exp(-kt)} & = & a \\
+v(s,t,\phi) & = & \multicolumn{3}{c}{\phi\exp(Ds^2/4k)} & = & b
+\end{array}
+\]
 By the subsidary equation, $du=dv=0$.
-Thus a general solution to (\ref{eq:OrnsteinUhlenbeckCharacteristicEquation})
+Thus a general solution % to (\ref{eq:OrnsteinUhlenbeckCharacteristicEquation})
 is $f(u,v)=0$ with $f$ an arbitrary function,
 or (equivalently) $v=g(u)$ with $g$ an arbitrary function.
 Therefore
 \[
 \phi(s,t) = \exp(-Ds^2/4k) g\left[ s \exp(-kt) \right]
 \]
+\end{frame}
+\begin{frame}{}
 The boundary condition $\phi(s,0)=\exp(\imath sx_0)$ requires that $g(s) = \exp(Ds^2/4k + \imath sx_0)$.
 Hence
 \[
@@ -666,68 +734,59 @@ Thus
 p(x,t) = \left( \frac{\pi D}{k}(1-\exp(-2kt)) \right)^{-1/2} \exp \left[ -\frac{k}{D} \frac{(x - x_0 \exp(-kt))^2}{1-\exp(-2kt)} \right]
 \]
 The canonical form has $D=2k$ (van Kampen p83).
-  \iteme
- \item Doob's Theorem (van Kampen p84)
- \item Moments, autocorrelation functions
- \item Spectral density of fluctuations; Wiener-Khinchin theorem (van Kampen p58-61)
- \item Fluctuation-Dissipation Theorem (e.g. van Kampen p220-221)
- \item Eigenfunctions (Gardiner p134)
- \item Langevin/stochastic differential equation (Gardiner p106-107; van Kampen p219-221)
-  \itemb
-  \item Ito vs Stratonovich interpretations (``Ito-Stratonovich dilemma'': van Kampen p232-237)
-  \item Ito's formula; corolloraries
-  \item Formulation of OU process as SDE
-   \inone{Solution of OU SDE by substitution}
-  \item Simulation of Langevin equations (Gardiner chapter 10, p373-392)
-  \iteme
- \iteme
 \end{frame}
+% \begin{frame}{}
+%   
+%   Doob's Theorem (van Kampen p84)
+%   Moments, autocorrelation functions
+%   Spectral density of fluctuations; Wiener-Khinchin theorem (van Kampen p58-61)
+%   Fluctuation-Dissipation Theorem (e.g. van Kampen p220-221)
+%   Eigenfunctions (Gardiner p134)
+%   Langevin/stochastic differential equation (Gardiner p106-107; van Kampen p219-221)
+%   
+%    Ito vs Stratonovich interpretations (``Ito-Stratonovich dilemma'': van Kampen p232-237)
+%    Ito's formula; corolloraries
+%    Formulation of OU process as SDE
+% %   \inone{Solution of OU SDE by substitution}
+%    Simulation of Langevin equations (Gardiner chapter 10, p373-392)
+%   
+%  
+% \end{frame}
 
 
-\begin{frame}{}
+% \begin{frame}{}
+% 
+% 
+%  Case study of an Ornstein-Uhlenbeck process in stochastic systems biology: the enzyme futile cycle
+%  \inone{Samoilov M, Plyasunov S, Arkin AP.  Stochastic amplification and signaling in enzymatic futile cycles through noise-induced bistability with oscillations.  Proc Natl Acad Sci U S A. 2005 Feb 15;102(7):2310-5.}
+%  Multivariate Ornstein-Uhlenbeck process (Gardiner p109-112)
+%  Case study of inference using a multivariate OU process: relationship between CD4 and beta-2-microglobulin in AIDS patients
+%  \inone{Sy JP, Taylor JM, Cumberland WG. A stochastic model for the analysis of bivariate longitudinal AIDS data. Biometrics. 1997 Jun;53(2):542-55.}
+% 
+% 
+% \end{frame}
+% 
+% \section{Phylogenetically related Brownian variables}
+% 
+% \begin{frame}{}
+% 
+% 
+%  Felsenstein, chapter 23 (p391-414)
+%  Consider tree
+% \begin{parsetree}
+%  ( .$x_1$. ( .$x_2$. .$x_4$. .$x_5$. ) ( .$x_3$. .$x_6$. .$x_7$. )  )
+% \end{parsetree}
+% where $x_n$ are Brownian variables.
+%  For a (parent,child) pair $(p,c)$
+% let $t_c$ be distance from $p$ to $c$ and let $d_c = x_c - x_p$.
+% We have $\expect{d_c}=0$ and $\expect{d_c^2} = D t_c$.
+%  Covariance matrix % {\bf MORE TO GO HERE}
+%  Pruning algorithm % {\bf MORE TO GO HERE}
+% 
+% 
+% \end{frame}
 
-\itemb
-\item Case study of an Ornstein-Uhlenbeck process in stochastic systems biology: the enzyme futile cycle
- \inone{Samoilov M, Plyasunov S, Arkin AP.  Stochastic amplification and signaling in enzymatic futile cycles through noise-induced bistability with oscillations.  Proc Natl Acad Sci U S A. 2005 Feb 15;102(7):2310-5.}
-\item Multivariate Ornstein-Uhlenbeck process (Gardiner p109-112)
-\item Case study of inference using a multivariate OU process: relationship between CD4 and beta-2-microglobulin in AIDS patients
- \inone{Sy JP, Taylor JM, Cumberland WG. A stochastic model for the analysis of bivariate longitudinal AIDS data. Biometrics. 1997 Jun;53(2):542-55.}
-\iteme
 
-\end{frame}
-
-\section{Phylogenetically related Brownian variables}
-
-\begin{frame}{}
-
-\itemb
-\item Felsenstein, chapter 23 (p391-414)
-\item Consider tree
-\begin{parsetree}
- ( .$x_1$. ( .$x_2$. .$x_4$. .$x_5$. ) ( .$x_3$. .$x_6$. .$x_7$. )  )
-\end{parsetree}
-where $x_n$ are Brownian variables.
-\item For a (parent,child) pair $(p,c)$
-let $t_c$ be distance from $p$ to $c$ and let $d_c = x_c - x_p$.
-We have $\expect{d_c}=0$ and $\expect{d_c^2} = D t_c$.
-\item Covariance matrix % {\bf MORE TO GO HERE}
-\item Pruning algorithm % {\bf MORE TO GO HERE}
-\iteme
-
-\end{frame}
-
-
-
-\section*{Summary}
-
-\begin{frame}{Summary}
-
-  % Keep the summary *very short*.
-  \begin{itemize}
-  \item SCFGs
-  \end{itemize}
-
-\end{frame}
 
 
 \end{document}
