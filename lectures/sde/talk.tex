@@ -98,8 +98,9 @@
 
   Texts:
   \itemb
-\item Stochastic Processes in Physics and Chemistry, N.G. Van Kampen
-\item Stochastic Methods: A Handbook for the Natural and Social Sciences, C. Gardiner
+\item Stochastic Processes in Physics and Chemistry. \\ N.G. Van Kampen
+\item Stochastic Methods: A Handbook for the Natural and Social Sciences. \\ C. Gardiner
+\item Information Theory, Inference, and Learning Algorithms. \\ D. MacKay
   \iteme
   
 \end{frame}
@@ -176,11 +177,11 @@ Therefore, in the limit $n \to \infty$, $z$ is Gaussian-distributed.
 \item Definition of a Gaussian process (van Kampen p63-64)
  \itemb
  \item ``Hierarchy of Distribution Functions'' (van Kampen p61+). Consider timepoints $t_1 < t_2 < t_3 \ldots t_n$. Define
-\[
-P_n(x_1,t_1;x_2,t_2;\ldots;x_n,t_n) \equiv P(x(t_1) = x_1, x(t_2) = x_2, \ldots, x(t_n) = x_n)
-\]
- \item If $P_n$ is an $n$-dimensional Gaussian $\forall n, \{ t_1 \ldots t_n \}$, then $x(t)$ is a {\em Gaussian process}
- \item The covariance matrix is $\sigma_{ij} = \expect{x(t_i) x(t_j)}$
+\begin{eqnarray*}
+  & & P_n(x_1,t_1;x_2,t_2;\ldots;x_n,t_n) \\
+  & & \equiv P(x(t_1) = x_1, x(t_2) = x_2, \ldots, x(t_n) = x_n)
+\end{eqnarray*}
+ \item If $P_n$ is an $n$-dimensional Gaussian $\forall n, \{ t_1 \ldots t_n \}$, then $x(t)$ is a {\em Gaussian process}. The covariance matrix is $\sigma_{ij} = \expect{x(t_i) x(t_j)}$
  \item Marginals of a multivariate Gaussian are themselves multivariate Gaussians.
 The full distribution $P(x(t))$ can be thought of as an infinite-dimensional Gaussian, $P_\infty$
  \item A Gaussian process is effectively a prior over functions, that can be fully specified by the covariance function
@@ -191,14 +192,12 @@ The full distribution $P(x(t))$ can be thought of as an infinite-dimensional Gau
 
 \begin{frame}{}
 
-\itemb
- \item The {\em characteristic functional}, $G([k])$, plays a role analogous to the characteristic function for discrete processes.
+ The {\em characteristic functional}, $G([k])$, plays a role analogous to the characteristic function for discrete processes.
 Define an arbitray auxiliary test function, $k(t)$. Then $G([k])$ is the following functional of $k(t)$
-\[
-G([k]) = \expect{\exp \left[ i \int_{-\infty}^{\infty} k(t) x(t) dt \right]}
-= \exp \left[ i\int k(t_1) \expect{x(t_1)} dt_1 - \frac{1}{2} \int \int k(t_1)k(t_2) \expect{\expect{x(t_1)x(t_2)}} dt_1 dt_2 \right]
-\]
-\iteme
+\begin{eqnarray*}
+& & G([k]) = \expect{\exp \left[ i \int_{-\infty}^{\infty} k(t) x(t) dt \right]} \\
+& & = \exp \left[ i\int k(t_1) \expect{x(t_1)} dt_1 - \frac{1}{2} \int \int k(t_1)k(t_2) \expect{\expect{x(t_1)x(t_2)}} dt_1 dt_2 \right]
+\end{eqnarray*}
 
 \end{frame}
 
@@ -232,7 +231,12 @@ P(y({\bf x})|{\bf t}_N,{\bf X}_N) = \frac{P({\bf t}_N|y({\bf x}),{\bf X}_N) P(y(
 \item
 In parametric approaches, $y({\bf x}) \equiv y({\bf x};{\bf w})$ where ${\bf w}$ is a set of parameters over which we place some prior.
 In nonparametric approaches (e.g. Gaussian processes), we place a prior directly on $P(y({\bf x}))$.
-\item A Gaussian process can be defined as a probability distribution over functions, $P(y({\bf x}))$, of the form
+\iteme
+
+\end{frame}
+
+\begin{frame}{}
+ A Gaussian process can be defined as a probability distribution over functions, $P(y({\bf x}))$, of the form
 \[
 P(y({\bf x})|\mu({\bf x}),{\bf A}) = \frac{1}{Z} \exp \left[ -\frac{1}{2} (y({\bf x})-\mu({\bf x}))^T {\bf A} (y({\bf x})-\mu({\bf x})) \right]
 \]
@@ -241,15 +245,13 @@ where ${\bf A}$ is a linear operator and the inner product of two functions is
 y({\bf x})^T z({\bf x}) = \int y({\bf x}) z({\bf x}) d{\bf x}
 \]
 The operator ${\bf A}$ must be {\em positive definite}, i.e. $y({\bf x})^T {\bf A} y({\bf x}) > 0$ for all functions except $y({\bf x})=0$.
-\iteme
 \end{frame}
 
 \begin{frame}{}
- \itemb
-\item Parametric approaches; fixed, adaptive basis functions; neural nets (MacKay p536-537)
+ Parametric approaches; fixed, adaptive basis functions; neural nets (MacKay p536-537)
  \itemb
  \item Consider a set of basis functions, $\{ \phi_h({\bf x}) \}_{h=1}^H$.
- \item Case \#1: fixed basis functions (parameters independent of ${\bf w}$)
+ \item Case \#1: fixed basis functions (parameters indep. of ${\bf w}$)
 \[
 y({\bf x};{\bf w}) = \sum_{h=1}^H w_h \phi_h({\bf x})
 \]
@@ -258,6 +260,11 @@ e.g. radial basis functions
 \phi_h({\bf x}) = \exp \left[ -\frac{({\bf x}-{\bf c}_h)^2}{2r^2} \right]
 \]
 In this model, $y$ is a linear function of ${\bf w}$.
+\iteme
+
+\end{frame}
+
+\begin{frame}{}
   \itemb
   \item Let $R_{nh} = \phi_h ({\bf x}^{(n)})$.
 Then $y^{(n)} = \sum_h R_{nh} w_h$.
@@ -278,7 +285,11 @@ then ${\bf y}$ is also Gaussian with covariance matrix
 P({\bf w}) = {\cal N}({\bf 0},\sigma^2_w {\bf RR}^T + \sigma^2_v {\bf I})
 \]
   \iteme
- \item Case \#2: adaptive basis functions (parameters dependent on ${\bf w}$)
+\end{frame}{}
+
+\begin{frame}
+
+Case \#2: adaptive basis functions (parameters dependent on ${\bf w}$)
 \[
 y({\bf x};{\bf w}) = \sum_{h=1}^H w_h^{(2)} \tanh \left( \sum_{i=1}^I w_{hi}^{(1)} x_i + w_{h0}^{(1)} \right) + w_0^{(2)}
 \]
@@ -287,12 +298,20 @@ The input weights are $\{ w_{hi}^{(1)} \}$, the hidden unit biases $\{ w_{h0}^{(
 the output weights $\{ w_h^{(2)} \}$ and the output bias $w_0^{(2)}$.
 \\
 In this model, $y$ is a nonlinear function of ${\bf w}$.
- \iteme
-\item Nonparametric approaches: the spline smoothing method (MacKay p538-541) attempts to minimize the functional
+\end{frame}{}
+
+\begin{frame}
+Nonparametric approaches: the spline smoothing method (MacKay p538-541) attempts to minimize the functional
 \[
 M(y(x)) = \frac{1}{2} \beta \sum_{n=1}^N (y(x^{(n)}) - t_n)^2 + \frac{1}{2} \alpha \int \left[ \derivn{y}{x}{k} \right]^2 dx
 \]
 (If $k=2$ then $y = \argmin M$ is a {\em cubic spline} with discontinuities in $\derivn{y}{x}{2}$ at the $x^{(n)}$.)
+\end{frame}{}
+
+\begin{frame}
+\[
+M(y(x)) = \frac{1}{2} \beta \sum_{n=1}^N (y(x^{(n)}) - t_n)^2 + \frac{1}{2} \alpha \int \left[ \derivn{y}{x}{k} \right]^2 dx
+\]
 The term involving $\alpha$ is equivalent to the following prior over $y(x)$
 \[
 P(y(x)|\alpha) = \mbox{const.} \times \exp \left( -\frac{1}{2}\alpha\int \left[ \derivn{y}{x}{k} \right]^2 dx \right)
@@ -300,38 +319,39 @@ P(y(x)|\alpha) = \mbox{const.} \times \exp \left( -\frac{1}{2}\alpha\int \left[ 
 which is a Gaussian process prior with ${\bf A} = [D^k]^T D^k$.
 Combined with linearly independent Gaussian noise on each measurement,
 this gives a Gaussian process model with MAP estimates identical to those produced by splines.
-\\
-To show the equivalence between splines and parametric models explicitly, we can develop Fourier-series basis functions for splines.
-Suppose the range of $x$-values of interest is within $[0,2\pi]$ (the $x$-axis can be rescaled if necessary).
-Keeping it real, write
-\begin{eqnarray*}
-y(x) & = & \sum_{h=0}^\infty c_h \cos(hx) + \sum_{h=1}^\infty s_h \sin(hx) \\
-\derivn{y}{x}{k} & = & \left\{ \begin{array}{ll}
-\displaystyle
-\sum_{h=1}^\infty c_h h^k (-1)^{k/2} \cos(hx) + \sum_{h=1}^\infty s_h h^k (-1)^{k/2} \sin(hx) & \mbox{($k$ even)} \\
-\displaystyle
-\sum_{h=1}^\infty c_h h^k (-1)^{(k+1)/2} \sin(hx) + \sum_{h=1}^\infty s_h h^k (-1)^{(k-1)/2} \cos(hx) & \mbox{($k$ odd)}
-\end{array} \right. \\
-P(y(x)|\alpha) & \sim & \exp \left( -\frac{1}{2}\alpha\int_0^{2\pi} \left[ \derivn{y}{x}{k} \right]^2 dx \right) \\
-& \sim & \exp \left( -\frac{1}{2} \alpha \times 2\pi \sum_{h=1}^{\infty} h^{2k} (c_h^2 + s_h^2) \right)
-\end{eqnarray*}
-which is a Gaussian prior on the $\{ c_h, s_h \}$.
-(NB MacKay (p539) has a different, incompatible form for this prior, with $h^{k/2}$ instead of $2\pi h^{2k}$;
-not sure where the error is, but the fundamental point (it's Gaussian) is unaffected.)
-\item Gaussian process regression (MacKay p542-543)
-\item Example covariance functions (MacKay p543-545; Abrahamsen, 1997); Wiener, Ornstein-Uhlenbeck
-\item Adaptive inference: learning the hyperparameters of the covariance function (MacKay p545-546)
-\item Gaussian process classifiers (MacKay p547)
-\iteme
+\end{frame}{}
 
-\end{frame}
+% \begin{frame}
+% To show the equivalence between splines and parametric models explicitly, we can develop Fourier-series basis functions for splines.
+% Suppose the range of $x$-values of interest is within $[0,2\pi]$ (the $x$-axis can be rescaled if necessary).
+% Keeping it real, write
+% \begin{eqnarray*}
+% y(x) & = & \sum_{h=0}^\infty c_h \cos(hx) + \sum_{h=1}^\infty s_h \sin(hx) \\
+% \derivn{y}{x}{k} & = & \left\{ \begin{array}{ll}
+% \displaystyle
+% \sum_{h=1}^\infty c_h h^k (-1)^{k/2} \cos(hx) + \sum_{h=1}^\infty s_h h^k (-1)^{k/2} \sin(hx) & \mbox{($k$ even)} \\
+% \displaystyle
+% \sum_{h=1}^\infty c_h h^k (-1)^{(k+1)/2} \sin(hx) + \sum_{h=1}^\infty s_h h^k (-1)^{(k-1)/2} \cos(hx) & \mbox{($k$ odd)}
+% \end{array} \right. \\
+% P(y(x)|\alpha) & \sim & \exp \left( -\frac{1}{2}\alpha\int_0^{2\pi} \left[ \derivn{y}{x}{k} \right]^2 dx \right) \\
+% & \sim & \exp \left( -\frac{1}{2} \alpha \times 2\pi \sum_{h=1}^{\infty} h^{2k} (c_h^2 + s_h^2) \right)
+% \end{eqnarray*}
+% which is a Gaussian prior on the $\{ c_h, s_h \}$.
+% (NB MacKay (p539) has a different, incompatible form for this prior, with $h^{k/2}$ instead of $2\pi h^{2k}$;
+% not sure where the error is, but the fundamental point (it's Gaussian) is unaffected.)
+
+% \item Gaussian process regression (MacKay p542-543)
+% \item Example covariance functions (MacKay p543-545; Abrahamsen, 1997); Wiener, Ornstein-Uhlenbeck
+% \item Adaptive inference: learning the hyperparameters of the covariance function (MacKay p545-546)
+% \item Gaussian process classifiers (MacKay p547)
+
+% \end{frame}
 
 \section{The Fokker-Planck equation}
 
 \begin{frame}{}
 
-\itemb
-\item Kramers-Moyal expansion (treatment follows van Kampen p197-198; see also Gillespie p74+)
+Kramers-Moyal expansion (treatment follows van Kampen p197-198; see also Gillespie p74+)
  \itemb
  \item The most general form of the {\em master equation} for a continuous-time stochastic process can be written
 \[
@@ -346,7 +366,12 @@ we can write the term $W(x-r;r)p(x-r,t)$ in the first integral as a Taylor expan
  - p(x,t) \int W(x;r) dr
 \]
 (Note that we're only allowed to expand $W(x;r)$ in $x$, not in $r$, since it varies smoothly in $x$ but rapidly in $r$.)
- \item We then rewrite the terms in the expansion using the {\em jump moments}
+\iteme
+\end{frame}
+
+\begin{frame}{}
+
+  We then rewrite the terms in the expansion using the {\em jump moments}
 \[
 a_n(x) = \int_{-\infty}^\infty r^n W(x;r) dr
 \]
@@ -356,12 +381,18 @@ so that the master equation becomes the Kramers-Moyal equation
  - p(x,t) \int W(x;r) dr \\
 & = & \sum_{n=1}^\infty \frac{(-1)^n}{n!} \pderivopn{x}{n} \left\{ a_n(x) p(x,t) \right\}
 \end{eqnarray*}
- \item Truncating the Taylor expansion to second order gives
+\end{frame}
+
+\begin{frame}{}
+Truncating the Taylor expansion to second order gives
 \[
 \pderivop{t} p(x,t) = -\pderivop{x} \left\{ a_1(x) p(x,t) \right\} + \frac{1}{2} \pderivopn{x}{2} \left\{ a_2(x) p(x,t) \right\}
 \]
 which is a form of the Fokker-Planck equation; see below.
- \item Consider the discrete-time process $x_n$ where $t = n \tau$. We have
+\end{frame}
+
+\begin{frame}{}
+Consider the discrete-time process $x_n$ where $t = n \tau$. We have
 \[
 x_{n+1} = x_n + \Xi_n
 \]
@@ -369,15 +400,22 @@ where the $\Xi_n$ are random variables distributed $\sim W(x_n;\Xi) \tau$.
 Whatever the precise form of $W(x;r)$, we're effectively assuming that we can characterize it
 (and hence $\Xi_n$) by its first two moments, $a_1$ and $a_2$.
 Since $x_n = \sum \Xi_n$, the process $x_n$ and hence $x(t)$ tends towards a Gaussian, by the central limit theorem.
- \item Gillespie uses different terminology:
+\end{frame}
+
+\begin{frame}{}
+Gillespie uses different terminology:
 the continuous-time version of what we have called $\Xi_n$ is the ``propagator''
 and is written explicitly as a function of $dt$, i.e. $\Xi(dt;x,t)$;
 $W(x;r)$ is the ``propagator density function'' and is written $\Pi(r|dt;x,t)$ (Gillespie p67);
 and the $a_n(x)$ are the {\em propagator moment functions} and are written $B_n$ (Gillespie p68).
 Gillespie makes the argument that the propagator density function is a Gaussian to first order in $dt$ (Gillespie p114-115).
- \iteme
-\item Fokker-Planck equation (Gillespie p121; van Kampen p193+)
- \itemb
+
+\end{frame}
+
+\begin{frame}{}
+\itemb
+\item  Fokker-Planck equation (Gillespie p121; van Kampen p193+)
+\itemb
  \item Fokker-Planck describes the time evolution of the probability density for a continuous stochastic process
 \[
 \pderivop{t} p(x,t) = -\pderivop{x} A(x,t)p(x,t) + \frac{1}{2} \pderivopn{x}{2} B(x,t)p(x,t)
