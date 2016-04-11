@@ -94,6 +94,17 @@
 
 
 
+\begin{frame}{}
+
+  Texts:
+  \itemb
+\item Stochastic Processes in Physics and Chemistry, N.G. Van Kampen
+\item Stochastic Methods: A Handbook for the Natural and Social Sciences, C. Gardiner
+  \iteme
+  
+\end{frame}
+
+
 \section{Review: properties of Gaussian distributions}
 
 \begin{frame}{}
@@ -101,15 +112,24 @@
 \itemb
  \item Review of salient facts about Gaussian distributions (Gardiner p36-37)
   \itemb
-  \item Multivariate Gaussian: if ${\bf x}$ is a vector of $n$ Gaussian r.v.s, then
+  \item Multivariate Gaussian: if ${\bf x}$ is a vector of $n$ Gaussian r.v.s,
 \[
 P({\bf x}) = [ 2\pi \det(\sigma) ]^{-1/2} \exp \left( -\frac{1}{2}({\bf x} - \bar{\bf x})^T \sigma^{-1} ({\bf x} - \bar{\bf x}) \right)
 \]
-where $\bar{\bf x}$ is the mean and $\sigma$ is the (symmetric) covariance matrix.
+where $\bar{\bf x}$ is mean and $\sigma$ is (symmetric) covariance matrix.
   \item Characteristic function
 \[
 \phi({\bf s}) = \expect{\exp(i {\bf s}^T {\bf x})} = \exp(i {\bf s}^T \bar{\bf x} - \frac{1}{2} {\bf s}^T \sigma {\bf s})
 \]
+\iteme
+
+\iteme
+
+\end{frame}
+
+
+\begin{frame}{}
+\itemb
   \item General formulae for moments when $\bar{\bf x}=0$: odd moments are zero, higher moments satisfy
 \[
 \expect{x_i x_j x_k \ldots} = \frac{2N!}{N! 2^N} \{ \sigma_{ij} \sigma_{kl} \sigma_{mn} \ldots \}_{\mbox{sym}}
@@ -121,11 +141,17 @@ where ``sym'' means the symmetrized form of the product of $\sigma$'s, and $2N$ 
 & = & \sigma_{12}\sigma_{34} + \sigma_{13}\sigma_{24} + \sigma_{14}\sigma_{23} \\
 \expect{x_i^4} & = & 3 \sigma^2_{ii}
 \end{eqnarray*}
-  \item Central limit theorem (van Kampen p26):
+\iteme
+
+\end{frame}
+
+
+\begin{frame}{}
+Central limit theorem (van Kampen p26):
 consider arbitrary $P_X(x)$ with $\expect{x} = 0$, $\expect{x^2} = \sigma$
 and let $z = n^{-1/2} \sum_n x_n$
-   \itemb
-   \item Characteristic function for $P_X$ is
+
+Characteristic function for $P_X$ is
 \[
 G_X(k) = \int \exp(ikx) P_X(x) dx = 1 - \frac{1}{2} k^2 \sigma + O(k^4)
 \]
@@ -136,13 +162,8 @@ G_Z(k) = \left[ G_X \left( \frac{k}{\sqrt{n}} \right) \right]^n
  \to \exp(-\frac{1}{2} \sigma k^2)
 \]
 (using the limit $\lim_{n \to \infty} (1+y/n)^{-n} = \exp(-y)$).
-   \item Therefore, in the limit $n \to \infty$, $z$ is Gaussian-distributed.
-   \iteme
-  \item Normal-gamma posterior for Gaussian mean/precision: see section~\ref{sec:ConjugatePriors}
-  \item Joint models for sequence and expression data
-   \inone{Barash \& Friedman}
-  \iteme
-\iteme
+
+Therefore, in the limit $n \to \infty$, $z$ is Gaussian-distributed.
 
 \end{frame}
 
@@ -164,6 +185,13 @@ P_n(x_1,t_1;x_2,t_2;\ldots;x_n,t_n) \equiv P(x(t_1) = x_1, x(t_2) = x_2, \ldots,
 The full distribution $P(x(t))$ can be thought of as an infinite-dimensional Gaussian, $P_\infty$
  \item A Gaussian process is effectively a prior over functions, that can be fully specified by the covariance function
  \iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{}
+
+\itemb
  \item The {\em characteristic functional}, $G([k])$, plays a role analogous to the characteristic function for discrete processes.
 Define an arbitray auxiliary test function, $k(t)$. Then $G([k])$ is the following functional of $k(t)$
 \[
@@ -188,10 +216,22 @@ The target variables $t_n$ will be assumed real scalars (corresponding to interp
 \[
 P(y({\bf x})|{\bf t}_N,{\bf X}_N) = \frac{P({\bf t}_N|y({\bf x}),{\bf X}_N) P(y({\bf x}))}{P({\bf t}_N|{\bf X}_N)}
 \]
-(Typically $P({\bf t}_N|y({\bf x}),{\bf X}_N)$ is assumed to be separable Gaussian noise.)
+Typically $t_k = y(x_k)+$ separable Gaussian noise.
+\iteme
+\iteme
+
+\end{frame}
+
+\begin{frame}{}
+
+\[
+P(y({\bf x})|{\bf t}_N,{\bf X}_N) = \frac{P({\bf t}_N|y({\bf x}),{\bf X}_N) P(y({\bf x}))}{P({\bf t}_N|{\bf X}_N)}
+\]
+
+\itemb
+\item
 In parametric approaches, $y({\bf x}) \equiv y({\bf x};{\bf w})$ where ${\bf w}$ is a set of parameters over which we place some prior.
 In nonparametric approaches (e.g. Gaussian processes), we place a prior directly on $P(y({\bf x}))$.
- \iteme
 \item A Gaussian process can be defined as a probability distribution over functions, $P(y({\bf x}))$, of the form
 \[
 P(y({\bf x})|\mu({\bf x}),{\bf A}) = \frac{1}{Z} \exp \left[ -\frac{1}{2} (y({\bf x})-\mu({\bf x}))^T {\bf A} (y({\bf x})-\mu({\bf x})) \right]
@@ -201,6 +241,11 @@ where ${\bf A}$ is a linear operator and the inner product of two functions is
 y({\bf x})^T z({\bf x}) = \int y({\bf x}) z({\bf x}) d{\bf x}
 \]
 The operator ${\bf A}$ must be {\em positive definite}, i.e. $y({\bf x})^T {\bf A} y({\bf x}) > 0$ for all functions except $y({\bf x})=0$.
+\iteme
+\end{frame}
+
+\begin{frame}{}
+ \itemb
 \item Parametric approaches; fixed, adaptive basis functions; neural nets (MacKay p536-537)
  \itemb
  \item Consider a set of basis functions, $\{ \phi_h({\bf x}) \}_{h=1}^H$.
