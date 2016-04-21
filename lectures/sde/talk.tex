@@ -735,6 +735,30 @@ p(x,t) = \left( \frac{\pi D}{k}(1-\exp(-2kt)) \right)^{-1/2} \exp \left[ -\frac{
 \]
 The canonical form has $D=2k$ (van Kampen p83).
 \end{frame}
+
+\begin{frame}{}
+
+The Langevin equation is a stochastic differential equation
+\[
+dx = A(x,t) dt + B(x,t) dW(t)
+\]
+
+where $W(t)$ is the Wiener process (white noise), for which $\langle W(t)W(t') \rangle = |t-t'|$
+
+This is equivalent to the Fokker-Planck equation
+\[
+\pderivop{t} p(x,t) = -\pderivop{x} A(x,t)p(x,t) + \frac{1}{2} \pderivopn{x}{2} B(x,t)p(x,t)
+\]
+
+This can be proved using {\em It\^{o}'s Lemma} which in turn follows from
+\[
+\langle dW(t) \rangle^2 = dt
+\]
+
+which is a property of the Wiener process (Gardiner 95-96).
+
+\end{frame}
+
 % \begin{frame}{}
 %   
 %   Doob's Theorem (van Kampen p84)
