@@ -508,6 +508,24 @@ that is, $\derivop{t} = A(x,t)$.
 
 \end{frame}
 
+\begin{frame}{}
+
+Fokker-Planck equation in $N>1$ variables:
+\[
+\pderivop{t} p({\bf x},t) = -\sum_i^N \pderivop{x_i} A_i({\bf x})p({\bf x},t) + \frac{1}{2} \sum_i^N \sum_j^N \pderivop{x_i} \pderivop{x_j} B_{ij}({\bf x})p({\bf x},t)
+\]
+
+where, by analogy with before, 
+
+\begin{eqnarray*}
+  A_i({\bf x}) & = & \int_{\Re^N} r_i W({\bf x};{\bf r}) d{\bf r} \\
+B_{ij}({\bf x}) & = & \int_{\Re^N} r_i r_j W({\bf x};{\bf r}) d{\bf r}
+\end{eqnarray*}
+
+i.e. the first \& second moments of the jump rate $W({\bf x};{\bf r})$.
+
+\end{frame}
+
 \section{The Wiener process}
 
 \begin{frame}{}
@@ -643,6 +661,28 @@ This means that the derivative of $x(t)$ is infinite  ``almost surely'' (in prob
 
 %\end{frame}
 
+\begin{frame}{}
+
+The Langevin equation is a stochastic differential equation
+\[
+dx = A(x,t) dt + B(x,t) d{\cal W}(t)
+\]
+where $d{\cal W}(t)$ is a ``white noise'' term derived from the Wiener process ${\cal W}(t)$, for which $\langle {\cal W}(t){\cal W}(t+u) \rangle = t$.
+
+This is equivalent to the Fokker-Planck equation
+\[
+\pderivop{t} p(x,t) = -\pderivop{x} A(x,t)p(x,t) + \frac{1}{2} \pderivopn{x}{2} B(x,t)p(x,t)
+\]
+
+The key to the equivalence is the property of the Wiener process that
+\[
+\langle d{\cal W}(t) \rangle^2 = dt
+\]
+
+See e.g. Gardiner pp95-96.
+
+\end{frame}
+
 \section{The Ornstein-Uhlenbeck process}
 
 \begin{frame}{}
@@ -736,27 +776,7 @@ p(x,t) = \left( \frac{\pi D}{k}(1-\exp(-2kt)) \right)^{-1/2} \exp \left[ -\frac{
 The canonical form has $D=2k$ (van Kampen p83).
 \end{frame}
 
-\begin{frame}{}
 
-The Langevin equation is a stochastic differential equation
-\[
-dx = A(x,t) dt + B(x,t) dW(t)
-\]
-where $dW(t)$ is a ``white noise'' term derived from the Wiener process $W(t)$, for which $\langle W(t)W(t+u) \rangle = t$.
-
-This is equivalent to the Fokker-Planck equation
-\[
-\pderivop{t} p(x,t) = -\pderivop{x} A(x,t)p(x,t) + \frac{1}{2} \pderivopn{x}{2} B(x,t)p(x,t)
-\]
-
-The key to the equivalence is the property of the Wiener process that
-\[
-\langle dW(t) \rangle^2 = dt
-\]
-
-See e.g. Gardiner pp95-96.
-
-\end{frame}
 
 % \begin{frame}{}
 %   
